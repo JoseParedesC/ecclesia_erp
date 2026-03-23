@@ -28,9 +28,10 @@ public class JournalVoucherConfiguration : IEntityTypeConfiguration<JournalVouch
         builder.Property(x => x.Description)
             .HasMaxLength(500);
 
-        builder.HasMany(typeof(JournalVoucherLineEntity), "_lines")
-            .WithOne()
-            .HasForeignKey("JournalVoucherId")
-            .OnDelete(DeleteBehavior.Cascade);
+        builder
+            .Navigation(e => e.Lines)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+            // .HasForeignKey("JournalVoucherId")
+            // .OnDelete(DeleteBehavior.Cascade);
     }
 }

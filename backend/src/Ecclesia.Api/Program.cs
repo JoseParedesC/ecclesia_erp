@@ -17,11 +17,16 @@ using Ecclesia.Application.Users.Commands.UpdateUser;
 using Ecclesia.Application.Users.Commands.DeleteUser;
 using Ecclesia.Application.Roles.Commands.CreateRole;
 using Ecclesia.Application.Roles.Commands.AssignRoleToUser;
+using Ecclesia.Application.Auth.Commands.Login;
+using Ecclesia.Application.Auth.Queries.Me;
+using Ecclesia.Application.Auth.Services;
 // endpoints
 using Ecclesia.Api.Endpoints.Users;
 using Ecclesia.Application.Users.Queries.GetAllUsers;
 using Ecclesia.Domain.Common.Constants.Permissions;
 using Ecclesia.Api.Endpoints.Roles;
+using Ecclesia.Infrastructure.Auth;
+using Ecclesia.Api.Endpoints.Auth;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,7 +45,20 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer();
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer           = true,
+        ValidateAudience         = true,
+        ValidateLifetime         = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer              = builder.Configuration["Jwt:Issuer"],
+        ValidAudience            = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey         = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+    };
+});
 
 builder.Services.AddAuthorization(options =>
 {
@@ -86,6 +104,11 @@ builder.Services.AddValidatorsFromAssembly(typeof(DeleteUserValidator).Assembly)
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 
 // Handlers
@@ -96,6 +119,8 @@ builder.Services.AddScoped<UpdateUserHandler>();
 builder.Services.AddScoped<DeleteUserHandler>();
 builder.Services.AddScoped<CreateRoleHandler>();
 builder.Services.AddScoped<AssignRoleToUserHandler>();
+builder.Services.AddScoped<LoginHandler>();
+builder.Services.AddScoped<MeHandler>();
 
 
 var app = builder.Build();
@@ -118,6 +143,7 @@ app.UseAuthorization();  // autorización
 // Map endpoints
 app.MapUsersEndpoints();
 app.MapRolesEndpoints();
+app.MapAuthEndpoints();
 
 var summaries = new[]
 {
