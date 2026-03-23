@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Ecclesia.Api/Ecclesia.Api.csproj" />
+    <Project Path="src/Ecclesia.Application/Ecclesia.Application.csproj" />
+    <Project Path="src/Ecclesia.Domain/Ecclesia.Domain.csproj" />
+    <Project Path="src/Ecclesia.Infrastructure/Ecclesia.Infrastructure.csproj" />
+  </Folder>
+</Solution>
