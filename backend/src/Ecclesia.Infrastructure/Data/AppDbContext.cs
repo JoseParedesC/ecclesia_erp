@@ -2,6 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using Ecclesia.Domain.Entities.Users;
 using Ecclesia.Domain.Entities.Roles;
 
+using Ecclesia.Domain.Entities.JournalVoucher;
+using Ecclesia.Domain.Entities.Account;
+using Ecclesia.Domain.Entities.Income;
+using Ecclesia.Domain.Entities.Expense;
+using Ecclesia.Domain.Entities.JournalVoucherLine;
+using Ecclesia.Domain.Entities.AccountingPeriod;
+using Ecclesia.Domain.Entities.SequenceControl;
+using Ecclesia.Domain.Entities.Comunity;
+
 namespace Ecclesia.Infrastructure.Data;
 
 public class AppDbContext : DbContext
@@ -19,12 +28,14 @@ public class AppDbContext : DbContext
     public DbSet<RolePermissionEntity> RolePermissions { get; set; }
 
 
-    public DbSet<JournalVoucher> JournalVouchers => Set<JournalVoucher>();
-    public DbSet<JournalVoucherLine> JournalVoucherLines => Set<JournalVoucherLine>();
-    public DbSet<Account> Accounts => Set<Account>();
-    public DbSet<AccountingPeriod> AccountingPeriods => Set<AccountingPeriod>();
-    public DbSet<Income> Incomes => Set<Income>();
-    public DbSet<Expense> Expenses => Set<Expense>();
+    public DbSet<JournalVoucherEntity> JournalVouchers => Set<JournalVoucherEntity>();
+    public DbSet<JournalVoucherLineEntity> JournalVoucherLines => Set<JournalVoucherLineEntity>();
+    public DbSet<AccountEntity> Accounts => Set<AccountEntity>();
+    public DbSet<AccountingPeriodEntity> AccountingPeriods => Set<AccountingPeriodEntity>();
+    public DbSet<IncomeEntity> Incomes => Set<IncomeEntity>();
+    public DbSet<ExpenseEntity> Expenses => Set<ExpenseEntity>();
+    public DbSet<SequenceControlEntity> SequenceControls { get; set; }
+    public DbSet<CommunityEntity> Communities => Set<CommunityEntity>();
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
