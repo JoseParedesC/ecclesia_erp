@@ -7,7 +7,7 @@ public class JournalVoucherLineConfiguration : IEntityTypeConfiguration<JournalV
 {
     public void Configure(EntityTypeBuilder<JournalVoucherLineEntity> builder)
     {
-        builder.ToTable("JournalVoucherLine", schema: SchemaConstants.Ecclesia.schema);
+        builder.ToTable("journal_voucher_lines", schema: SchemaConstants.Accounting.schema);
 
         builder.HasKey(x => x.Id);
 
@@ -16,5 +16,10 @@ public class JournalVoucherLineConfiguration : IEntityTypeConfiguration<JournalV
 
         builder.Property(x => x.LineType)
             .HasConversion<string>();
+
+        builder.HasOne(l => l.Account)
+            .WithMany()
+            .HasForeignKey(l => l.AccountId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

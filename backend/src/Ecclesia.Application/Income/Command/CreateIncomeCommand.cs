@@ -1,10 +1,5 @@
+using Ecclesia.Application.Incomes.DTOs;
 
-using MediatR;
+namespace Ecclesia.Application.Incomes.Commands.CreateIncome;
 
-public record CreateIncomeCommand(
-    DateTime Date,
-    decimal Amount,
-    Guid CashAccountId,
-    Guid CommunityId,
-    Guid? DonorId
-) : IRequest<Guid>;
+public record CreateIncomeCommand(CreateIncomeDto Dto);

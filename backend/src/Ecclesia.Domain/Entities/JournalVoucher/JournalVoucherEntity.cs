@@ -1,3 +1,4 @@
+using Ecclesia.Domain.Entities.AccountingPeriod;
 using Ecclesia.Domain.Entities.JournalVoucherLine;
 
 namespace Ecclesia.Domain.Entities.JournalVoucher;
@@ -16,6 +17,7 @@ public class JournalVoucherEntity : BaseEntity
     public Guid AccountingPeriodId { get; private set; }
     public Guid RostroId { get; private set; }
     public Guid CommunityId { get; private set; }
+    public AccountingPeriodEntity AccountingPeriod { get; set; } = null!;
 
     public IReadOnlyCollection<JournalVoucherLineEntity> Lines => _lines;
 

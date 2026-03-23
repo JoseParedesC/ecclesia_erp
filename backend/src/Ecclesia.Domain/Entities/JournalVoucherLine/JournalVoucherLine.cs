@@ -1,4 +1,6 @@
 
+using Ecclesia.Domain.Entities.Account;
+using Ecclesia.Domain.Entities.JournalVoucher;
 namespace Ecclesia.Domain.Entities.JournalVoucherLine;
 
 public class JournalVoucherLineEntity
@@ -10,6 +12,9 @@ public class JournalVoucherLineEntity
 
     public decimal Amount { get; private set; }
     public LineType LineType { get; private set; }
+
+    public JournalVoucherEntity JournalVoucher { get; set; } = null!;
+    public AccountEntity Account { get; set; } = null!;
 
     private JournalVoucherLineEntity() { }
 

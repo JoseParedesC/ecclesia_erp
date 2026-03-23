@@ -1,75 +1,79 @@
-
-using MediatR;
-using Ecclesia.Domain.Interfaces;
-using Ecclesia.Domain.Entities.JournalVoucher;
+using Ecclesia.Domain.Common;
+using Ecclesia.Domain.Common.Constants.Accounting;
 using Ecclesia.Domain.Entities.Income;
+using Ecclesia.Domain.Entities.JournalVoucher;
+using Ecclesia.Domain.Interfaces;
 
+namespace Ecclesia.Application.Incomes.Commands.CreateIncome;
 
-public class CreateIncomeHandler : IRequestHandler<CreateIncomeCommand, Guid>
+public class CreateIncomeHandler
 {
-    private readonly IVoucherNumberGenerator _voucherNumberGenerator;
-    private readonly IJournalVoucherRepository _voucherRepository;
     private readonly IIncomeRepository _incomeRepository;
-    private readonly IAccountingPeriodService _accountingPeriodService;
+    private readonly IJournalVoucherRepository _journalVoucherRepository;
+    private readonly IAccountingPeriodRepository _accountingPeriodRepository;
     private readonly ICommunityRepository _communityRepository;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly CreateIncomeValidator _validator;
 
     public CreateIncomeHandler(
-        IJournalVoucherRepository voucherRepository,
         IIncomeRepository incomeRepository,
-        IAccountingPeriodService accountingPeriodService,
+        IJournalVoucherRepository journalVoucherRepository,
+        IAccountingPeriodRepository accountingPeriodRepository,
         ICommunityRepository communityRepository,
-        IUnitOfWork unitOfWork,
-        IVoucherNumberGenerator voucherNumberGenerator)
+        CreateIncomeValidator validator)
     {
-        _voucherRepository = voucherRepository;
         _incomeRepository = incomeRepository;
-        _unitOfWork = unitOfWork;
-        _voucherNumberGenerator = voucherNumberGenerator;
-        _accountingPeriodService = accountingPeriodService;
+        _journalVoucherRepository = journalVoucherRepository;
+        _accountingPeriodRepository = accountingPeriodRepository;
         _communityRepository = communityRepository;
+        _validator = validator;
     }
 
-    public async Task<Guid> Handle(CreateIncomeCommand request, CancellationToken ct)
+    public async Task<Result<Guid>> HandleAsync(CreateIncomeCommand command, CancellationToken cancellationToken = default)
     {
-        // 1. Crear voucher
-        var voucher = new JournalVoucherEntity(
-            voucherNumber: await _voucherNumberGenerator.GenerateAsync(VoucherType.Income, request.Date, ct),
-            type: VoucherType.Income,
-            date: request.Date,
-            description: "Income",
-            accountingPeriodId: await _accountingPeriodService.GetOpenPeriodIdAsync(request.Date, ct),
-            rostroId: await _communityRepository.GetRostroIdAsync(request.CommunityId, ct),
-            communityId: request.CommunityId
+        // Validación
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            var errors = validationResult.Errors.Select(e => e.ErrorMessage);
+            return Result<Guid>.Failure(errors);
+        }
+
+        // Verificar periodo contable abierto
+        var period = await _accountingPeriodRepository.GetOpenPeriodAsync(command.Dto.CommunityId, cancellationToken);
+        if (period is null)
+            return Result<Guid>.Failure("No existe un período contable abierto para esta comunidad.");
+
+        // Generar número de voucher
+        var voucherNumber = await _journalVoucherRepository.GenerateVoucherNumberAsync(cancellationToken);
+
+        // Obtener Rostro desde la comunidad (asociación obligatoria en el modelo)
+        var rostroId = await _communityRepository.GetRostroIdAsync(command.Dto.CommunityId, cancellationToken);
+
+        // Crear JournalVoucher automáticamente
+        var journalVoucher = new JournalVoucherEntity(
+            voucherNumber,
+            VoucherType.Income,
+            command.Dto.Date,
+            command.Dto.Description,
+            period.Id,
+            rostroId,
+            command.Dto.CommunityId
         );
 
-        
-        Guid accountCash = Guid.Empty;
-        Guid accountIncome = Guid.Empty;
+        await _journalVoucherRepository.AddAsync(journalVoucher, cancellationToken);
 
-        // 2. Partida doble
-        voucher.AddLine(accountCash, request.Amount, LineType.Debit);
-        voucher.AddLine(accountIncome, request.Amount, LineType.Credit);
-
-        voucher.Post();
-
-        // 3. Crear Income
+        // Crear Income
         var income = new IncomeEntity(
-            request.Date,
-            request.Amount,
-            request.CashAccountId,
-            request.CommunityId,
-            voucher.Id,
-            request.DonorId
+            command.Dto.Date,
+            command.Dto.Amount,
+            command.Dto.CashAccountId,
+            command.Dto.CommunityId,
+            journalVoucher.Id,
+            command.Dto.DonorId
         );
 
-        // 4. Persistencia
-        await _voucherRepository.AddAsync(voucher, ct);
-        await _incomeRepository.AddAsync(income, ct);
+        await _incomeRepository.AddAsync(income, cancellationToken);
 
-        // 5. Commit
-        await _unitOfWork.SaveChangesAsync(ct);
-
-        return income.Id;
+        return Result<Guid>.Success(income.Id);
     }
 }

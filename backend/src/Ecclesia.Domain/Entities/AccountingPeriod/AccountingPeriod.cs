@@ -1,12 +1,14 @@
 
+using Ecclesia.Domain.Common.Constants;
 namespace Ecclesia.Domain.Entities.AccountingPeriod;
 
 public class AccountingPeriodEntity : BaseEntity
 {
     public int Year { get; private set; }
     public int Month { get; private set; }
-
-    public bool IsClosed { get; private set; }
+    public StatusDocument Status { get; set; } // OPEN / CLOSED
+    public DateTime? ClosedAt { get; set; }
+    public Guid CommunityId { get; set; }
 
     private AccountingPeriodEntity() { }
 
@@ -14,11 +16,11 @@ public class AccountingPeriodEntity : BaseEntity
     {
         Year = year;
         Month = month;
-        IsClosed = false;
+        Status = StatusDocument.OPEN;
     }
 
     public void Close()
     {
-        IsClosed = true;
+        Status = StatusDocument.CLOSED;
     }
 }

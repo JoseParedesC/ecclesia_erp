@@ -18,4 +18,12 @@ public static class EcclesiaPermissions
         public const string DELETE = "access_manager.roles.delete";
         public const string ASSIGN = "access_manager.roles.assign";
     }
+
+    public static class INCOME
+    {
+        public const string READ   = "access_manager.income.read";
+        public const string CREATE = "access_manager.income.create";
+        public const string UPDATE = "access_manager.income.update";
+        public const string DELETE = "access_manager.income.delete";
+    }
 }

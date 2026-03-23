@@ -15,15 +15,25 @@ public class JournalVoucherRepository : IJournalVoucherRepository
         _context = context;
     }
 
-    public async Task AddAsync(JournalVoucherEntity voucher, CancellationToken ct)
+    public async Task AddAsync(JournalVoucherEntity voucher, CancellationToken cancellationToken = default)
     {
-        await _context.JournalVouchers.AddAsync(voucher, ct);
+        await _context.JournalVouchers.AddAsync(voucher, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<JournalVoucherEntity?> GetByIdAsync(Guid id, CancellationToken ct)
+    public async Task<JournalVoucherEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        => await _context.JournalVouchers
+            .AsNoTracking()
+            .Include(j => j.Lines)
+            .FirstOrDefaultAsync(j => j.Id == id, cancellationToken);
+
+    public async Task<string> GenerateVoucherNumberAsync(CancellationToken cancellationToken = default)
     {
-        return await _context.JournalVouchers
-            .Include("_lines")
-            .FirstOrDefaultAsync(x => x.Id == id, ct);
-    }
+        var year  = DateTime.UtcNow.Year;
+        var month = DateTime.UtcNow.Month;
+        var count = await _context.JournalVouchers
+            .CountAsync(j => j.Date.Year == year && j.Date.Month == month, cancellationToken);
+
+        return $"JV-{year}{month:D2}-{(count + 1):D4}"; // JV-202503-0001
+    } 
 }

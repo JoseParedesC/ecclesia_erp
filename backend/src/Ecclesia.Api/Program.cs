@@ -27,6 +27,9 @@ using Ecclesia.Domain.Common.Constants.Permissions;
 using Ecclesia.Api.Endpoints.Roles;
 using Ecclesia.Infrastructure.Auth;
 using Ecclesia.Api.Endpoints.Auth;
+using Ecclesia.Domain.Interfaces;
+using Ecclesia.Application.Incomes.Commands.CreateIncome;
+using Ecclesia.Api.Endpoints.Incomes;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -105,6 +108,11 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IIncomeRepository, IncomeRepository>();
+builder.Services.AddScoped<IJournalVoucherRepository, JournalVoucherRepository>();
+builder.Services.AddScoped<ICommunityRepository, CommunityRepository>();
+builder.Services.AddScoped<IAccountingPeriodRepository, AccountingPeriodService>();
+
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ITokenService, TokenService>();
@@ -121,6 +129,7 @@ builder.Services.AddScoped<CreateRoleHandler>();
 builder.Services.AddScoped<AssignRoleToUserHandler>();
 builder.Services.AddScoped<LoginHandler>();
 builder.Services.AddScoped<MeHandler>();
+builder.Services.AddScoped<CreateIncomeHandler>();
 
 
 var app = builder.Build();
@@ -144,6 +153,7 @@ app.UseAuthorization();  // autorización
 app.MapUsersEndpoints();
 app.MapRolesEndpoints();
 app.MapAuthEndpoints();
+app.MapIncomesEndpoints();
 
 var summaries = new[]
 {

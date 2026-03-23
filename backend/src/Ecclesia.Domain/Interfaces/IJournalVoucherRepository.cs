@@ -7,4 +7,5 @@ public interface IJournalVoucherRepository
 {
     Task AddAsync(JournalVoucherEntity voucher, CancellationToken ct);
     Task<JournalVoucherEntity?> GetByIdAsync(Guid id, CancellationToken ct);
+    Task<string> GenerateVoucherNumberAsync(CancellationToken cancellationToken = default);
 }

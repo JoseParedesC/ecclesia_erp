@@ -33,3 +33,9 @@ public enum CashAccountType
     Cash,
     Bank
 }
+
+public enum StatusDocument
+{
+    OPEN,
+    CLOSED
+}
