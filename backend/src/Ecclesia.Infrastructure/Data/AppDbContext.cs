@@ -19,6 +19,14 @@ public class AppDbContext : DbContext
     public DbSet<RolePermissionEntity> RolePermissions { get; set; }
 
 
+    public DbSet<JournalVoucher> JournalVouchers => Set<JournalVoucher>();
+    public DbSet<JournalVoucherLine> JournalVoucherLines => Set<JournalVoucherLine>();
+    public DbSet<Account> Accounts => Set<Account>();
+    public DbSet<AccountingPeriod> AccountingPeriods => Set<AccountingPeriod>();
+    public DbSet<Income> Incomes => Set<Income>();
+    public DbSet<Expense> Expenses => Set<Expense>();
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
