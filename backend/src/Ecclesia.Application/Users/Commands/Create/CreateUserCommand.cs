@@ -1,8 +1,5 @@
+using Ecclesia.Application.Users.DTOs;
+
 namespace Ecclesia.Application.Users.Commands.CreateUser;
 
-public record CreateUserCommand(
-    string Name,
-    string UserName,
-    string Email,
-    string Password
-);
+public record CreateUserCommand(CreateUserDto userDto);

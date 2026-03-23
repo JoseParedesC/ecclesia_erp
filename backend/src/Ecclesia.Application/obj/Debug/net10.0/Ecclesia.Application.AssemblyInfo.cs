@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Ecclesia.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+91901ff363ee933bb20cfda806671b9946aeeab8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cd43599593b67cedcae394d799d41c100376d4c2")]
 [assembly: System.Reflection.AssemblyProductAttribute("Ecclesia.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Ecclesia.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

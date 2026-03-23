@@ -1,7 +1,11 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Scalar.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Ecclesia.Infrastructure.Data;
+using Ecclesia.Api.Middleware;
 // repositories
 using Ecclesia.Domain.Repositories;
 // repositories implementations
@@ -11,8 +15,13 @@ using Ecclesia.Application.Users.Queries;
 using Ecclesia.Application.Users.Commands.CreateUser;
 using Ecclesia.Application.Users.Commands.UpdateUser;
 using Ecclesia.Application.Users.Commands.DeleteUser;
+using Ecclesia.Application.Roles.Commands.CreateRole;
+using Ecclesia.Application.Roles.Commands.AssignRoleToUser;
 // endpoints
 using Ecclesia.Api.Endpoints.Users;
+using Ecclesia.Application.Users.Queries.GetAllUsers;
+using Ecclesia.Domain.Common.Constants.Permissions;
+using Ecclesia.Api.Endpoints.Roles;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,6 +35,45 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
         .UseSnakeCaseNamingConvention());
 
+// Add authentication and authorization
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(EcclesiaPermissions.USER.CREATE, policy =>
+        policy.RequireClaim("permission", EcclesiaPermissions.USER.CREATE));
+
+    options.AddPolicy(EcclesiaPermissions.USER.READ, policy =>
+        policy.RequireClaim("permission", EcclesiaPermissions.USER.READ));
+
+    options.AddPolicy(EcclesiaPermissions.USER.UPDATE, policy =>
+        policy.RequireClaim("permission", EcclesiaPermissions.USER.UPDATE));
+
+    options.AddPolicy(EcclesiaPermissions.USER.DELETE, policy =>
+        policy.RequireClaim("permission", EcclesiaPermissions.USER.DELETE));
+
+
+    //
+    options.AddPolicy(EcclesiaPermissions.ROLES.CREATE, policy =>
+        policy.RequireClaim("permission", EcclesiaPermissions.ROLES.CREATE));
+
+    options.AddPolicy(EcclesiaPermissions.ROLES.READ, policy =>
+        policy.RequireClaim("permission", EcclesiaPermissions.ROLES.READ));
+
+    options.AddPolicy(EcclesiaPermissions.ROLES.UPDATE, policy =>
+        policy.RequireClaim("permission", EcclesiaPermissions.ROLES.UPDATE));
+
+    options.AddPolicy(EcclesiaPermissions.ROLES.DELETE, policy =>
+        policy.RequireClaim("permission", EcclesiaPermissions.ROLES.DELETE));
+
+    options.AddPolicy(EcclesiaPermissions.ROLES.ASSIGN, policy =>
+        policy.RequireClaim("permission", EcclesiaPermissions.ROLES.ASSIGN));
+});
+
 // FluentValidation
 builder.Services.AddValidatorsFromAssembly(typeof(GetUserByIdValidator).Assembly);
 builder.Services.AddValidatorsFromAssembly(typeof(GetAllUsersValidator).Assembly);
@@ -33,15 +81,21 @@ builder.Services.AddValidatorsFromAssembly(typeof(CreateUserValidator).Assembly)
 builder.Services.AddValidatorsFromAssembly(typeof(UpdateUserValidator).Assembly);
 builder.Services.AddValidatorsFromAssembly(typeof(DeleteUserValidator).Assembly);
 
+
+// register repositories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+
+
 // Handlers
 builder.Services.AddScoped<GetUserByIdHandler>();
 builder.Services.AddScoped<GetAllUsersHandler>();
 builder.Services.AddScoped<CreateUserHandler>();
 builder.Services.AddScoped<UpdateUserHandler>();
 builder.Services.AddScoped<DeleteUserHandler>();
-
-// register repositories
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<CreateRoleHandler>();
+builder.Services.AddScoped<AssignRoleToUserHandler>();
 
 
 var app = builder.Build();
@@ -53,10 +107,17 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+// Middleware for global error handling
+app.UseMiddleware<ErrorHandlingMiddleware>();
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication(); // autenticación
+app.UseAuthorization();  // autorización
 
 // Map endpoints
 app.MapUsersEndpoints();
+app.MapRolesEndpoints();
 
 var summaries = new[]
 {

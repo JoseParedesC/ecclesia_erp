@@ -8,11 +8,11 @@ public static class UsersEndpoint
         var group = app.MapGroup("/api/users")
             .WithTags("Users");
 
-        group.MapGet("/", GetAll.GetAllAsync);
-        group.MapGet("/{id:guid}", GetById.GetByIdAsync);
-        group.MapPost("/", Create.CreateAsync);
-        group.MapPut("/{id:guid}", Update.UpdateAsync);
-        group.MapDelete("/{id:guid}", Delete.DeleteAsync);
+        GetAll.Map(group);
+        GetById.Map(group);
+        Create.Map(group); 
+        Update.Map(group);
+        Delete.Map(group);
     }
 
     

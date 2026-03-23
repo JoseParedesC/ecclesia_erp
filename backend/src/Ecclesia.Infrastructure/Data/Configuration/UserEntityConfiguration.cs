@@ -1,6 +1,7 @@
 using Ecclesia.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Ecclesia.Domain.Common.Constants.SchemaConstants;
 
 namespace Ecclesia.Infrastructure.Data.Configurations;
 
@@ -8,7 +9,7 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
 {
     public void Configure(EntityTypeBuilder<UserEntity> builder)
     {
-        builder.ToTable("users", schema: "access_manager");
+        builder.ToTable("users", schema: SchemaConstants.AccessManager.schema);
 
         builder.Property(u => u.Name)
             .IsRequired()
