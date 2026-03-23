@@ -62,6 +62,8 @@ public class UserRepository : IUserRepository
     public async Task<UserEntity?> GetByIdNoTrackAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _context.Users
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
@@ -69,12 +71,16 @@ public class UserRepository : IUserRepository
     public async Task<UserEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await _context.Users
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
             .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
     }
 
     public async Task<UserEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
         return await _context.Users
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
     }

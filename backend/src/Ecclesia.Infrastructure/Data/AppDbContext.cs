@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Ecclesia.Domain.Entities.Users;
+using Ecclesia.Domain.Entities.Roles;
 
 namespace Ecclesia.Infrastructure.Data;
 
@@ -13,6 +14,9 @@ public class AppDbContext : DbContext
     // public DbSet<YourEntity> YourEntities { get; set; }
 
     public DbSet<UserEntity> Users { get; set; }
+    public DbSet<RoleEntity> Roles { get; set; }
+    public DbSet<UserRoleEntity> UserRoles { get; set; }
+    public DbSet<RolePermissionEntity> RolePermissions { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
