@@ -22,6 +22,183 @@ namespace Ecclesia.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Ecclesia.Domain.Entities.Roles.RoleEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("UpdatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_roles");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_roles_name");
+
+                    b.ToTable("roles", "access_manager");
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.Roles.RolePermissionEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("Option")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("option");
+
+                    b.Property<string>("Permission")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("permission");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("role_id");
+
+                    b.Property<string>("Schema")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)")
+                        .HasColumnName("schema");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("UpdatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_role_permissions");
+
+                    b.HasIndex("RoleId", "Schema", "Option", "Permission")
+                        .IsUnique()
+                        .HasDatabaseName("ix_role_permissions_role_id_schema_option_permission");
+
+                    b.ToTable("role_permissions", "access_manager");
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.Roles.UserRoleEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("role_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("UpdatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_roles");
+
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_user_roles_role_id");
+
+                    b.HasIndex("UserId", "RoleId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_roles_user_id_role_id");
+
+                    b.ToTable("user_roles", "access_manager");
+                });
+
             modelBuilder.Entity("Ecclesia.Domain.Entities.Users.UserEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -87,6 +264,51 @@ namespace Ecclesia.Infrastructure.Migrations
                         .HasDatabaseName("ix_users_email");
 
                     b.ToTable("users", "access_manager");
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.Roles.RolePermissionEntity", b =>
+                {
+                    b.HasOne("Ecclesia.Domain.Entities.Roles.RoleEntity", "Role")
+                        .WithMany("Permissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_role_permissions_roles_role_id");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.Roles.UserRoleEntity", b =>
+                {
+                    b.HasOne("Ecclesia.Domain.Entities.Roles.RoleEntity", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_roles_role_id");
+
+                    b.HasOne("Ecclesia.Domain.Entities.Users.UserEntity", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_users_user_id");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.Roles.RoleEntity", b =>
+                {
+                    b.Navigation("Permissions");
+
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.Users.UserEntity", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }
