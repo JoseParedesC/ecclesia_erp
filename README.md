@@ -1,1 +1,14 @@
 # ecclesia_erp
+
+/backend/src/Ecclesia.Api/obj/*
+/backend/src/Ecclesia.Application/obj/*
+/backend/src/Ecclesia.Domain/obj/*
+/backend/src/Ecclesia.Infrastructure/obj/*
+
+appsettings.Development.json
+
+bin/
+obj/
+*.user
+*.log
+
