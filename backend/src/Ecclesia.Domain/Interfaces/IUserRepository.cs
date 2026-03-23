@@ -1,10 +1,12 @@
 using Ecclesia.Domain.Entities.Users;
+using Ecclesia.Domain.Common;
+using Ecclesia.Domain.Common.PagedQuery;
 
 namespace Ecclesia.Domain.Repositories;
 
 public interface IUserRepository
 {
-    Task<List<UserEntity>> ListAllAsync(CancellationToken cancellationToken = default);
+    Task<PagedResult<UserEntity>> ListAllAsync(PagedQuery query, CancellationToken cancellationToken = default);
     Task<UserEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<UserEntity?> GetByIdNoTrackAsync(Guid id, CancellationToken cancellationToken = default);
     Task<UserEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
