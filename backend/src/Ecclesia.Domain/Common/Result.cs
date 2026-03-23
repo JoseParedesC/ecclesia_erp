@@ -25,3 +25,20 @@ public class Result<T>
     public static Result<T> Failure(IEnumerable<string> errors) => new(errors);
     public static Result<T> Failure(string error) => new(new[] { error });
 }
+
+public class Result
+{
+    public bool IsSuccess { get; }
+    public bool IsFailure => !IsSuccess;
+    public IEnumerable<string> Errors { get; }
+
+    private Result(bool isSuccess, IEnumerable<string> errors)
+    {
+        IsSuccess = isSuccess;
+        Errors = errors;
+    }
+
+    public static Result Success() => new(true, Enumerable.Empty<string>());
+    public static Result Failure(IEnumerable<string> errors) => new(false, errors);
+    public static Result Failure(string error) => new(false, new[] { error });
+}

@@ -132,3 +132,14 @@ C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\De
 C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\FluentValidation.dll
 C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\FluentValidation.DependencyInjectionExtensions.dll
 C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\BCrypt.Net-Next.dll
+C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\MediatR.dll
+C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\MediatR.Contracts.dll
+C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\MediatR.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\ERDA\Documents\My projects\ecclesia_erp\backend\src\Ecclesia.Api\bin\Debug\net10.0\System.IdentityModel.Tokens.Jwt.dll
