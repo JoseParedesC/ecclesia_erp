@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Ecclesia.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cd43599593b67cedcae394d799d41c100376d4c2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+43939cf9584fbd96b14f743e1e95428b0aa77069")]
 [assembly: System.Reflection.AssemblyProductAttribute("Ecclesia.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Ecclesia.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
