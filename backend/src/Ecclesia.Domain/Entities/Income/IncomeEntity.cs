@@ -2,6 +2,7 @@
 using Ecclesia.Domain.Entities.Accounting;
 using Ecclesia.Domain.Entities.Comunity;
 using Ecclesia.Domain.Entities.JournalVoucher;
+using Ecclesia.Domain.Entities.ThirdParty;
 
 namespace Ecclesia.Domain.Entities.Income;
 
@@ -10,8 +11,8 @@ public class IncomeEntity : BaseEntity
     public DateTime Date { get; private set; }
     public decimal Amount { get; private set; }
 
-    public Guid? DonorId { get; private set; }
-    public DonorEntity? Donor { get; private set; }
+    public Guid? ThirdPartyId { get; private set; }
+    public ThirdPartyEntity? ThirdParty { get; private set; }
     public Guid CashAccountId { get; private set; }
     public CashAccountEntity? CashAccount { get; private set; }
     public Guid CommunityId { get; private set; }
@@ -22,13 +23,13 @@ public class IncomeEntity : BaseEntity
 
     private IncomeEntity() { }
 
-    public IncomeEntity(DateTime date, decimal amount, Guid cashAccountId, Guid communityId, Guid journalVoucherId, Guid? donorId = null)
+    public IncomeEntity(DateTime date, decimal amount, Guid cashAccountId, Guid communityId, Guid journalVoucherId, Guid? thirdPartyId = null)
     {
         Date = date;
         Amount = amount;
         CashAccountId = cashAccountId;
         CommunityId = communityId;
         JournalVoucherId = journalVoucherId;
-        DonorId = donorId;
+        ThirdPartyId = thirdPartyId;
     }
 }

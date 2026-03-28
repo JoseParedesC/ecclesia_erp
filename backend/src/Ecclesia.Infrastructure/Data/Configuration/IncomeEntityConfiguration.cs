@@ -19,9 +19,9 @@ public class IncomeEntityConfiguration : IEntityTypeConfiguration<IncomeEntity>
         builder.Property(i => i.Date)
             .IsRequired();
 
-        builder.HasOne(i => i.Donor)
+        builder.HasOne(i => i.ThirdParty)
             .WithMany()
-            .HasForeignKey(i => i.DonorId)
+            .HasForeignKey(i => i.ThirdPartyId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(i => i.CashAccount)

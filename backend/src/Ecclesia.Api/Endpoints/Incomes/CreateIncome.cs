@@ -20,11 +20,11 @@ public static class CreateIncome
     }
 
     public static async Task<IResult> CreateAsync(
-        [FromBody] CreateIncomeDto dto,
+        [FromBody] CreateIncomeDto requestBody,
         [FromServices] CreateIncomeHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.HandleAsync(new CreateIncomeCommand(dto), cancellationToken);
+        var result = await handler.HandleAsync(requestBody, cancellationToken);
 
         return result.IsSuccess
             ? Results.Created($"/api/incomes/{result.Value}", new { Id = result.Value })

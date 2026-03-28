@@ -26,4 +26,12 @@ public static class EcclesiaPermissions
         public const string UPDATE = "access_manager.income.update";
         public const string DELETE = "access_manager.income.delete";
     }
+
+    public static class THIRD_PARTIES
+    {
+        public const string READ   = "access_manager.third-parties.read";
+        public const string CREATE = "access_manager.third-parties.create";
+        public const string UPDATE = "access_manager.third-parties.update";
+        public const string DELETE = "access_manager.third-parties.delete";
+    }
 }

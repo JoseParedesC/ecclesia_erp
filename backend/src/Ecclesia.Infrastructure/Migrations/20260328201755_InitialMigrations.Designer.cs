@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ecclesia.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260323165726_UpdateAppDbContext")]
-    partial class UpdateAppDbContext
+    [Migration("20260328201755_InitialMigrations")]
+    partial class InitialMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,7 +89,7 @@ namespace Ecclesia.Infrastructure.Migrations
                     b.HasIndex("ParentAccountId")
                         .HasDatabaseName("ix_account_parent_account_id");
 
-                    b.ToTable("Account", "ecclesia");
+                    b.ToTable("account", "accounting");
                 });
 
             modelBuilder.Entity("Ecclesia.Domain.Entities.Accounting.CashAccountEntity", b =>
@@ -143,61 +143,7 @@ namespace Ecclesia.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_cash_accounts");
 
-                    b.ToTable("cash_accounts", (string)null);
-                });
-
-            modelBuilder.Entity("Ecclesia.Domain.Entities.Accounting.DonorEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("created_by_user_id");
-
-                    b.Property<string>("DocumentNumber")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("document_number");
-
-                    b.Property<bool>("IsCompany")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_company");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("updated_at")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<Guid>("UpdatedByUserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("updated_by_user_id");
-
-                    b.Property<uint>("xmin")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("xid")
-                        .HasColumnName("xmin");
-
-                    b.HasKey("Id")
-                        .HasName("pk_donors");
-
-                    b.ToTable("donors", (string)null);
+                    b.ToTable("cash_accounts", "accounting");
                 });
 
             modelBuilder.Entity("Ecclesia.Domain.Entities.AccountingPeriod.AccountingPeriodEntity", b =>
@@ -257,7 +203,7 @@ namespace Ecclesia.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_accounting_periods");
 
-                    b.ToTable("accounting_periods", (string)null);
+                    b.ToTable("accounting_periods", "accounting");
                 });
 
             modelBuilder.Entity("Ecclesia.Domain.Entities.Comunity.CommunityEntity", b =>
@@ -287,7 +233,7 @@ namespace Ecclesia.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_community_rostro_id_name");
 
-                    b.ToTable("Community", "ecclesia");
+                    b.ToTable("community", "ecclesia");
                 });
 
             modelBuilder.Entity("Ecclesia.Domain.Entities.Expense.ExpenseEntity", b =>
@@ -299,7 +245,8 @@ namespace Ecclesia.Infrastructure.Migrations
                         .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("numeric")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
                         .HasColumnName("amount");
 
                     b.Property<Guid>("CashAccountId")
@@ -347,7 +294,10 @@ namespace Ecclesia.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_expenses");
 
-                    b.ToTable("expenses", (string)null);
+                    b.HasIndex("JournalVoucherId")
+                        .HasDatabaseName("ix_expenses_journal_voucher_id");
+
+                    b.ToTable("expenses", "accounting");
                 });
 
             modelBuilder.Entity("Ecclesia.Domain.Entities.Income.IncomeEntity", b =>
@@ -385,13 +335,13 @@ namespace Ecclesia.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date");
 
-                    b.Property<Guid?>("DonorId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("donor_id");
-
                     b.Property<Guid>("JournalVoucherId")
                         .HasColumnType("uuid")
                         .HasColumnName("journal_voucher_id");
+
+                    b.Property<Guid?>("ThirdPartyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("third_party_id");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -418,11 +368,11 @@ namespace Ecclesia.Infrastructure.Migrations
                     b.HasIndex("CommunityId")
                         .HasDatabaseName("ix_incomes_community_id");
 
-                    b.HasIndex("DonorId")
-                        .HasDatabaseName("ix_incomes_donor_id");
-
                     b.HasIndex("JournalVoucherId")
                         .HasDatabaseName("ix_incomes_journal_voucher_id");
+
+                    b.HasIndex("ThirdPartyId")
+                        .HasDatabaseName("ix_incomes_third_party_id");
 
                     b.ToTable("incomes", "accounting");
                 });
@@ -753,7 +703,537 @@ namespace Ecclesia.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_sequence_control_sequence_type");
 
-                    b.ToTable("SequenceControl", (string)null);
+                    b.ToTable("sequence_control", (string)null);
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdParty.ThirdPartyEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("address");
+
+                    b.Property<DateOnly?>("BirthDate")
+                        .HasColumnType("date")
+                        .HasColumnName("birth_date");
+
+                    b.Property<string>("BusinessName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("business_name");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("city");
+
+                    b.Property<string>("Country")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("country");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("first_name");
+
+                    b.Property<string>("IdentificationNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("identification_number");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("LastName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("last_name");
+
+                    b.Property<string>("PersonType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("person_type");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("phone");
+
+                    b.Property<DateTime>("RegisteredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("registered_at");
+
+                    b.Property<string>("TradeName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("trade_name");
+
+                    b.Property<string>("TypeIden")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("type_iden");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("UpdatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_third_parties");
+
+                    b.ToTable("third_parties", (string)null);
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdPartyBranches.CustomerInfo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<decimal>("CreditLimit")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("credit_limit");
+
+                    b.Property<string>("CustomerCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("customer_code");
+
+                    b.Property<DateTime>("FirstPurchaseDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("first_purchase_date");
+
+                    b.Property<int>("PaymentTermDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("payment_term_days");
+
+                    b.Property<string>("Segment")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("segment");
+
+                    b.Property<Guid>("ThirdPartyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("third_party_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("UpdatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_customer_infos");
+
+                    b.HasIndex("ThirdPartyId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_customer_infos_third_party_id");
+
+                    b.ToTable("customer_infos", (string)null);
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdPartyBranches.DonorInfo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<DateTime>("FirstDonationDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("first_donation_date");
+
+                    b.Property<bool>("IsRecurrent")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_recurrent");
+
+                    b.Property<DateTime?>("LastDonationDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_donation_date");
+
+                    b.Property<Guid>("ThirdPartyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("third_party_id");
+
+                    b.Property<decimal>("TotalDonated")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total_donated");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("UpdatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_donor_infos");
+
+                    b.HasIndex("ThirdPartyId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_donor_infos_third_party_id");
+
+                    b.ToTable("donor_infos", (string)null);
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdPartyBranches.EmployeeInfo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<string>("BankAccount")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("bank_account");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("Department")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("department");
+
+                    b.Property<DateTime>("HireDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("hire_date");
+
+                    b.Property<string>("Position")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("position");
+
+                    b.Property<decimal>("Salary")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("salary");
+
+                    b.Property<DateTime?>("TerminationDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("termination_date");
+
+                    b.Property<Guid>("ThirdPartyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("third_party_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("UpdatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_employee_infos");
+
+                    b.HasIndex("ThirdPartyId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_employee_infos_third_party_id");
+
+                    b.ToTable("employee_infos", (string)null);
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdPartyBranches.MemberInfo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("MemberCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("member_code");
+
+                    b.Property<DateTime>("MemberSince")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("member_since");
+
+                    b.Property<string>("Ministry")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("ministry");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("ThirdPartyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("third_party_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("UpdatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_member_infos");
+
+                    b.HasIndex("ThirdPartyId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_member_infos_third_party_id");
+
+                    b.ToTable("member_infos", (string)null);
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdPartyBranches.PartnerInfo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<string>("AgreementCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("agreement_code");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("Organization")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("organization");
+
+                    b.Property<DateTime>("PartnerSince")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("partner_since");
+
+                    b.Property<string>("PartnerType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("partner_type");
+
+                    b.Property<Guid>("ThirdPartyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("third_party_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("UpdatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_partner_infos");
+
+                    b.HasIndex("ThirdPartyId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_partner_infos_third_party_id");
+
+                    b.ToTable("partner_infos", (string)null);
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdPartyBranches.SupplierInfo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<string>("BankAccount")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("bank_account");
+
+                    b.Property<string>("BankName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("bank_name");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<int>("PaymentTermDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("payment_term_days");
+
+                    b.Property<string>("TaxRegime")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("tax_regime");
+
+                    b.Property<Guid>("ThirdPartyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("third_party_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at")
+                        .HasDefaultValueSql("now()");
+
+                    b.Property<Guid>("UpdatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid")
+                        .HasColumnName("xmin");
+
+                    b.HasKey("Id")
+                        .HasName("pk_supplier_infos");
+
+                    b.HasIndex("ThirdPartyId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_supplier_infos_third_party_id");
+
+                    b.ToTable("supplier_infos", (string)null);
                 });
 
             modelBuilder.Entity("Ecclesia.Domain.Entities.Users.UserEntity", b =>
@@ -833,6 +1313,16 @@ namespace Ecclesia.Infrastructure.Migrations
                     b.Navigation("ParentAccount");
                 });
 
+            modelBuilder.Entity("Ecclesia.Domain.Entities.Expense.ExpenseEntity", b =>
+                {
+                    b.HasOne("Ecclesia.Domain.Entities.JournalVoucher.JournalVoucherEntity", null)
+                        .WithMany()
+                        .HasForeignKey("JournalVoucherId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_expenses_journal_vouchers_journal_voucher_id");
+                });
+
             modelBuilder.Entity("Ecclesia.Domain.Entities.Income.IncomeEntity", b =>
                 {
                     b.HasOne("Ecclesia.Domain.Entities.Accounting.CashAccountEntity", "CashAccount")
@@ -849,12 +1339,6 @@ namespace Ecclesia.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_incomes_communities_community_id");
 
-                    b.HasOne("Ecclesia.Domain.Entities.Accounting.DonorEntity", "Donor")
-                        .WithMany()
-                        .HasForeignKey("DonorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_incomes_donors_donor_id");
-
                     b.HasOne("Ecclesia.Domain.Entities.JournalVoucher.JournalVoucherEntity", "JournalVoucher")
                         .WithMany()
                         .HasForeignKey("JournalVoucherId")
@@ -862,13 +1346,19 @@ namespace Ecclesia.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_incomes_journal_vouchers_journal_voucher_id");
 
+                    b.HasOne("Ecclesia.Domain.Entities.ThirdParty.ThirdPartyEntity", "ThirdParty")
+                        .WithMany()
+                        .HasForeignKey("ThirdPartyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_incomes_third_parties_third_party_id");
+
                     b.Navigation("CashAccount");
 
                     b.Navigation("Community");
 
-                    b.Navigation("Donor");
-
                     b.Navigation("JournalVoucher");
+
+                    b.Navigation("ThirdParty");
                 });
 
             modelBuilder.Entity("Ecclesia.Domain.Entities.JournalVoucher.JournalVoucherEntity", b =>
@@ -937,6 +1427,66 @@ namespace Ecclesia.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdPartyBranches.CustomerInfo", b =>
+                {
+                    b.HasOne("Ecclesia.Domain.Entities.ThirdParty.ThirdPartyEntity", null)
+                        .WithOne("Customer")
+                        .HasForeignKey("Ecclesia.Domain.Entities.ThirdPartyBranches.CustomerInfo", "ThirdPartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_customer_infos_third_parties_third_party_id");
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdPartyBranches.DonorInfo", b =>
+                {
+                    b.HasOne("Ecclesia.Domain.Entities.ThirdParty.ThirdPartyEntity", null)
+                        .WithOne("Donor")
+                        .HasForeignKey("Ecclesia.Domain.Entities.ThirdPartyBranches.DonorInfo", "ThirdPartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_donor_infos_third_parties_third_party_id");
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdPartyBranches.EmployeeInfo", b =>
+                {
+                    b.HasOne("Ecclesia.Domain.Entities.ThirdParty.ThirdPartyEntity", null)
+                        .WithOne("Employee")
+                        .HasForeignKey("Ecclesia.Domain.Entities.ThirdPartyBranches.EmployeeInfo", "ThirdPartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_employee_infos_third_parties_third_party_id");
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdPartyBranches.MemberInfo", b =>
+                {
+                    b.HasOne("Ecclesia.Domain.Entities.ThirdParty.ThirdPartyEntity", null)
+                        .WithOne("Member")
+                        .HasForeignKey("Ecclesia.Domain.Entities.ThirdPartyBranches.MemberInfo", "ThirdPartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_member_infos_third_parties_third_party_id");
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdPartyBranches.PartnerInfo", b =>
+                {
+                    b.HasOne("Ecclesia.Domain.Entities.ThirdParty.ThirdPartyEntity", null)
+                        .WithOne("Partner")
+                        .HasForeignKey("Ecclesia.Domain.Entities.ThirdPartyBranches.PartnerInfo", "ThirdPartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_partner_infos_third_parties_third_party_id");
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdPartyBranches.SupplierInfo", b =>
+                {
+                    b.HasOne("Ecclesia.Domain.Entities.ThirdParty.ThirdPartyEntity", null)
+                        .WithOne("Supplier")
+                        .HasForeignKey("Ecclesia.Domain.Entities.ThirdPartyBranches.SupplierInfo", "ThirdPartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_supplier_infos_third_parties_third_party_id");
+                });
+
             modelBuilder.Entity("Ecclesia.Domain.Entities.Account.AccountEntity", b =>
                 {
                     b.Navigation("ChildAccounts");
@@ -952,6 +1502,21 @@ namespace Ecclesia.Infrastructure.Migrations
                     b.Navigation("Permissions");
 
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Ecclesia.Domain.Entities.ThirdParty.ThirdPartyEntity", b =>
+                {
+                    b.Navigation("Customer");
+
+                    b.Navigation("Donor");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Member");
+
+                    b.Navigation("Partner");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("Ecclesia.Domain.Entities.Users.UserEntity", b =>

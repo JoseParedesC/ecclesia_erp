@@ -21,13 +21,14 @@ public class AuthRepository : IAuthRepository
             .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
 
     public async Task<IEnumerable<string>> GetUserPermissionsAsync(Guid userId, CancellationToken cancellationToken = default)
-        => await _context.UserRoles
-            .AsNoTracking()
-            .Where(ur => ur.UserId == userId)
-            .SelectMany(ur => ur.Role.Permissions)
-            .Select(p => $"{p.Schema}.{p.Option}.{p.Permission}")
-            .Distinct()
-            .ToListAsync(cancellationToken);
+    => await _context.UserRoles
+        .AsNoTracking()
+        .Where(ur => ur.UserId == userId)
+        .SelectMany(ur => ur.Role.Permissions)
+        .Where(p => p.Schema != null && p.Option != null && p.Permission != null)
+        .Select(p => $"{p.Schema}.{p.Option}.{p.Permission}")
+        .Distinct()
+        .ToListAsync(cancellationToken);
 
     public async Task<IEnumerable<string>> GetUserRolesAsync(Guid userId, CancellationToken cancellationToken = default)
         => await _context.UserRoles

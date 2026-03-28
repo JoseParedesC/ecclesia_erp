@@ -7,7 +7,7 @@ public class CommunityConfiguration : IEntityTypeConfiguration<CommunityEntity>
 {
     public void Configure(EntityTypeBuilder<CommunityEntity> builder)
     {
-        builder.ToTable("Community", schema: SchemaConstants.Ecclesia.schema);
+        builder.ToTable("community", schema: SchemaConstants.Ecclesia.schema);
 
         // PK
         builder.HasKey(x => x.Id);

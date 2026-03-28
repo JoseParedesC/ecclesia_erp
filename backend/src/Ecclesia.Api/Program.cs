@@ -30,6 +30,12 @@ using Ecclesia.Api.Endpoints.Auth;
 using Ecclesia.Domain.Interfaces;
 using Ecclesia.Application.Incomes.Commands.CreateIncome;
 using Ecclesia.Api.Endpoints.Incomes;
+using Ecclesia.Api.Endpoints.ThirdParty;
+using Ecclesia.Application.ThirdParty.Queries.ListThirdParties;
+using Ecclesia.Application.ThirdParty.Queries.GetThirdPartyById;
+using Ecclesia.Application.ThirdParty.Commands.CreateThirdParty;
+using Ecclesia.Application.ThirdParty.Commands.UpdateThirdParty;
+using Ecclesia.Application.ThirdParty.Commands.DeleteThirdParty;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -112,6 +118,7 @@ builder.Services.AddScoped<IIncomeRepository, IncomeRepository>();
 builder.Services.AddScoped<IJournalVoucherRepository, JournalVoucherRepository>();
 builder.Services.AddScoped<ICommunityRepository, CommunityRepository>();
 builder.Services.AddScoped<IAccountingPeriodRepository, AccountingPeriodService>();
+builder.Services.AddScoped<IThirdPartyRepository, ThirdPartyRepository>();
 
 
 builder.Services.AddHttpContextAccessor();
@@ -130,6 +137,11 @@ builder.Services.AddScoped<AssignRoleToUserHandler>();
 builder.Services.AddScoped<LoginHandler>();
 builder.Services.AddScoped<MeHandler>();
 builder.Services.AddScoped<CreateIncomeHandler>();
+builder.Services.AddScoped<ListThirdPartiesHandler>();
+builder.Services.AddScoped<GetThirdPartyByIdHandler>();
+builder.Services.AddScoped<CreateThirdPartyHandler>();
+builder.Services.AddScoped<UpdateThirdPartyHandler>();
+builder.Services.AddScoped<DeleteThirdPartyHandler>();
 
 
 var app = builder.Build();
@@ -154,6 +166,7 @@ app.MapUsersEndpoints();
 app.MapRolesEndpoints();
 app.MapAuthEndpoints();
 app.MapIncomesEndpoints();
+app.MapThirdPartyEndpoints();
 
 var summaries = new[]
 {

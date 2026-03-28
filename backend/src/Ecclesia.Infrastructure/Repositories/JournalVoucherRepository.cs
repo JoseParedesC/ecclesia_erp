@@ -34,6 +34,6 @@ public class JournalVoucherRepository : IJournalVoucherRepository
         var count = await _context.JournalVouchers
             .CountAsync(j => j.Date.Year == year && j.Date.Month == month, cancellationToken);
 
-        return $"JV-{year}{month:D2}-{(count + 1):D4}"; // JV-202503-0001
+        return $"JV-{year}{month:D2}-{count + 1:D4}"; // JV-202503-0001
     } 
 }

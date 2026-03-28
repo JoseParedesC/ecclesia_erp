@@ -8,13 +8,13 @@ public static class IncomeMapper
         entity.Id,
         entity.Date,
         entity.Amount,
-        entity.DonorId,
-        entity.Donor.Name,
+        entity.ThirdPartyId,
+        entity.ThirdParty?.TradeName,
         entity.CashAccountId,
-        entity.CashAccount.Name,
+        entity.CashAccount?.Name,
         entity.CommunityId,
         entity.JournalVoucherId,
-        entity.JournalVoucher.VoucherNumber,
+        entity.JournalVoucher?.VoucherNumber,
         entity.CreatedAt
     );
 }

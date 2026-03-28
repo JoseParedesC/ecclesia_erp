@@ -7,7 +7,7 @@ public class AccountConfiguration : IEntityTypeConfiguration<AccountEntity>
 {
     public void Configure(EntityTypeBuilder<AccountEntity> builder)
     {
-        builder.ToTable("Account", schema: SchemaConstants.Accounting.schema);
+        builder.ToTable("account", schema: SchemaConstants.Accounting.schema);
 
         builder.HasKey(x => x.Id);
 

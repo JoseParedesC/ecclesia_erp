@@ -9,7 +9,7 @@ public class SequenceControlConfiguration : IEntityTypeConfiguration<SequenceCon
 {
     public void Configure(EntityTypeBuilder<SequenceControlEntity> builder)
     {
-        builder.ToTable("SequenceControl");
+        builder.ToTable("sequence_control");
 
         builder.HasKey(x => x.Id);
 

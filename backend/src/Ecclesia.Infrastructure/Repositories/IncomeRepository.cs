@@ -26,7 +26,7 @@ public class IncomeRepository : IIncomeRepository
     public async Task<IncomeEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => await _context.Incomes
             .AsNoTracking()
-            .Include(i => i.Donor)
+            .Include(i => i.ThirdParty)
             .Include(i => i.CashAccount)
             .Include(i => i.JournalVoucher)
             .FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
@@ -35,7 +35,7 @@ public class IncomeRepository : IIncomeRepository
     {
         var dbQuery = _context.Incomes
             .AsNoTracking()
-            .Include(i => i.Donor)
+            .Include(i => i.ThirdParty)
             .Include(i => i.CashAccount)
             .AsQueryable();
 
@@ -47,11 +47,11 @@ public class IncomeRepository : IIncomeRepository
             dbQuery = !string.IsNullOrWhiteSpace(query.SearchField)
                 ? query.SearchField.ToLower() switch  // busca solo en el campo especificado
                 {
-                    "name"     => dbQuery.Where(u => EF.Functions.ILike(u.Donor.Name,     pattern)),
+                    "name"     => dbQuery.Where(u => EF.Functions.ILike(u.ThirdParty.TradeName, pattern)),
                     _          => dbQuery
                 }
                 : dbQuery.Where(u =>  // busca en todos los campos
-                    EF.Functions.ILike(u.Donor.Name,     pattern)
+                    EF.Functions.ILike(u.ThirdParty.TradeName, pattern)
                 );
         }
 
