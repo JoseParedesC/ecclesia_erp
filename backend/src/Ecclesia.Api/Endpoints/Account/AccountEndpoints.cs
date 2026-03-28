@@ -13,5 +13,7 @@ public static class AccountEndpoint
         GetById.Map(group);
         Update.Map(group);
         Delete.Map(group);
+        Search.Map(group);
+        
     }
 }

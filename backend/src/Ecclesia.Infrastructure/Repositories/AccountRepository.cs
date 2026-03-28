@@ -68,6 +68,32 @@ public class AccountRepository : IAccountRepository
         return new PagedResult<AccountEntity>(items, totalCount, query.Page, query.PageSize);
     }
 
+    public async Task<PagedResult<AccountEntity>> SearchAsync(string? search, int page, int pageSize, CancellationToken cancellationToken = default)
+    {
+        IQueryable<AccountEntity> dbQuery = _context.Accounts.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var pattern = $"%{search}%";
+
+            dbQuery = dbQuery.Where(x =>
+                EF.Functions.ILike(x.Code ?? string.Empty, pattern) ||
+                EF.Functions.ILike(x.Name ?? string.Empty, pattern)
+            );
+        }
+
+        dbQuery = dbQuery.OrderBy(x => x.Code);
+
+        var totalCount = await dbQuery.CountAsync(cancellationToken);
+
+        var items = await dbQuery
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<AccountEntity>(items, totalCount, page, pageSize);
+    }
+
     // ── CREATE ────────────────────────────────────────────────────────────────
 
     public async Task<AccountEntity> CreateAsync(AccountEntity entity, CancellationToken cancellationToken = default)

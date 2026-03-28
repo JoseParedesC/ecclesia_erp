@@ -32,4 +32,11 @@ public static class AccountMapper
         entity.Name,
         entity.Type
     );
+
+    public static AccountSearchDto ToSearchDto(this AccountEntity entity) => new(
+        entity.Id,
+        entity.Code,
+        entity.Name,
+        entity.Type
+    );
 }

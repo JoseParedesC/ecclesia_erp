@@ -40,6 +40,7 @@ using Ecclesia.Application.Accounts.Commands.CreateAccount;
 using Ecclesia.Application.Accounts.Queries.GetAccountById;
 using Ecclesia.Application.Accounts.Commands.UpdateAccount;
 using Ecclesia.Application.Accounts.Commands.DeleteAccount;
+using Ecclesia.Application.Accounts.Queries.SearchAccounts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -144,6 +145,7 @@ builder.Services.AddScoped<CreateAccountHandler>();
 builder.Services.AddScoped<GetAccountByIdHandler>();
 builder.Services.AddScoped<UpdateAccountHandler>();
 builder.Services.AddScoped<DeleteAccountHandler>();
+builder.Services.AddScoped<SearchAccountsHandler>();
 
 // ── Pipeline ──────────────────────────────────────────────────────────────────
 var app = builder.Build();
