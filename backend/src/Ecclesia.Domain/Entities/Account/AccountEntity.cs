@@ -1,5 +1,3 @@
-
-
 namespace Ecclesia.Domain.Entities.Account;
 
 public class AccountEntity : BaseEntity
@@ -11,13 +9,21 @@ public class AccountEntity : BaseEntity
     public AccountEntity? ParentAccount { get; set; }
     public ICollection<AccountEntity> ChildAccounts { get; set; } = new List<AccountEntity>();
 
-    private AccountEntity() { }
+    protected AccountEntity() { }
 
-    public AccountEntity(AccountEntity account)
+    public AccountEntity(string? code, string? name, AccountType type, Guid? parentAccountId = null)
     {
-        Code = account.Code;
-        Name = account.Name;
-        Type = account.Type;
-        ParentAccountId = account.ParentAccountId;
+        Code            = code;
+        Name            = name;
+        Type            = type;
+        ParentAccountId = parentAccountId;
+    }
+
+    public void Update(string? code, string? name, AccountType type, Guid? parentAccountId)
+    {
+        Code            = code            ?? Code;
+        Name            = name            ?? Name;
+        Type            = type;
+        ParentAccountId = parentAccountId ?? ParentAccountId;
     }
 }
