@@ -5,8 +5,8 @@
 
 appsettings.Development.json
 
-bin/
-obj/
+**/bin/
+**/obj/
 *.user
 *.log
 

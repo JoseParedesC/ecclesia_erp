@@ -96,7 +96,12 @@ public class ErrorHandlingMiddleware
                 _logger.LogWarning(badReqEx, "Solicitud incorrecta: {Message}", badReqEx.Message);
                 statusCode = HttpStatusCode.BadRequest;
                 title = "Solicitud incorrecta";
-                detail = "Formato de solicitud o tipo de dato inválido.";
+                // Exponer el mensaje real para debugging y usuario (formato, tipo, JSON inválido)
+                detail = badReqEx.Message;
+                errors = new Dictionary<string, string[]>
+                {
+                    { "Request", new[] { badReqEx.Message } }
+                };
                 break;
 
             case InvalidOperationException invalidOpEx:
