@@ -1,0 +1,33 @@
+using Ecclesia.Application.ThirdParty.DTOs;
+using Ecclesia.Application.ThirdParty.Queries.GetThirdPartyById;
+using Ecclesia.Domain.Common.Constants.Permissions;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Ecclesia.Api.Endpoints.ThirdParty;
+
+public static class GetById
+{
+    public static void Map(RouteGroupBuilder group)
+    {
+        group.MapGet("/{id:guid}", GetByIdAsync)
+            .WithName("GetThirdPartyById")
+            .WithSummary("Get third party by id")
+            .WithDescription("Returns a single third party by its unique identifier.")
+            .RequireAuthorization(EcclesiaPermissions.THIRD_PARTIES.READ)
+            .Produces<ThirdPartyDetailDto>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status401Unauthorized);
+    }
+
+    public static async Task<IResult> GetByIdAsync(
+        Guid id,
+        [FromServices] GetThirdPartyByIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.HandleAsync(id, cancellationToken);
+
+        return result.IsSuccess
+            ? Results.Ok(result.Value)
+            : Results.NotFound(new { Errors = result.Errors });
+    }
+}

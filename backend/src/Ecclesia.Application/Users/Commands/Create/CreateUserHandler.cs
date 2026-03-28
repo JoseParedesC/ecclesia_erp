@@ -1,3 +1,4 @@
+using Ecclesia.Application.Users.DTOs;
 using Ecclesia.Domain.Common;
 using Ecclesia.Domain.Entities.Users;
 using Ecclesia.Domain.Repositories;
@@ -16,31 +17,26 @@ public class CreateUserHandler
     }
 
     public async Task<Result<Guid>> HandleAsync(CreateUserCommand command, CancellationToken cancellationToken = default)
+{
+    // Validación
+    var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+    if (!validationResult.IsValid)
     {
-        // Validación
-        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult.Errors.Select(e => e.ErrorMessage);
-            return Result<Guid>.Failure(errors);
-        }
-
-        // Verificar email duplicado
-        var existingUser = await _userRepository.GetByEmailAsync(command.Email, cancellationToken);
-        if (existingUser is not null)
-            return Result<Guid>.Failure("Ya existe un usuario con ese email.");
-
-        // Crear entidad
-        var user = new UserEntity
-        {
-            Name = command.Name,
-            UserName = command.UserName,
-            Email = command.Email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(command.Password)
-        };
-
-        await _userRepository.AddAsync(user, cancellationToken);
-
-        return Result<Guid>.Success(user.Id);
+        var errors = validationResult.Errors.Select(e => e.ErrorMessage);
+        return Result<Guid>.Failure(errors);
     }
+
+    // Verificar email duplicado
+    var existingUser = await _userRepository.GetByEmailAsync(command.userDto.Email, cancellationToken);
+    if (existingUser is not null)
+        return Result<Guid>.Failure("Ya existe un usuario con ese email.");
+
+    // Crear entidad usando el mapper
+    var passwordHash = BCrypt.Net.BCrypt.HashPassword(command.userDto.Password);
+    var user = command.userDto.ToEntity(passwordHash);
+
+    await _userRepository.AddAsync(user, cancellationToken);
+
+    return Result<Guid>.Success(user.Id);
+}
 }

@@ -1,0 +1,491 @@
+// =====================================================
+// ENUMS
+// =====================================================
+
+Enum VoucherType {
+  INCOME
+  EXPENSE
+  ADJUSTMENT
+  REVERSAL
+}
+
+Enum VoucherStatus {
+  DRAFT
+  POSTED
+  CANCELLED
+}
+
+Enum LineType {
+  DEBIT
+  CREDIT
+}
+
+Enum AccountType {
+  ASSET
+  LIABILITY
+  EQUITY
+  INCOME
+  EXPENSE
+}
+
+Enum CashAccountType {
+  CASH
+  BANK
+}
+
+Enum IdentificationType {
+  CC
+  NIT
+  CE
+  PASSPORT
+  TI
+  OTHER
+}
+
+Enum PersonType {
+  NATURAL
+  JURIDICA
+}
+
+Enum MemberStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+Enum PartnerType {
+  STRATEGIC
+  OPERATIONAL
+  FINANCIAL
+  OTHER
+}
+
+Enum CustomerSegment {
+  RETAIL
+  WHOLESALE
+  CORPORATE
+  OTHER
+}
+
+// =====================================================
+// CORE - SECURITY
+// =====================================================
+
+Table Role {
+  id uuid [pk]
+  name varchar(50) [not null, unique]
+}
+
+Table User {
+  id uuid [pk]
+  name varchar(100) [not null]
+  email varchar(150) [not null, unique]
+  role_id uuid [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+}
+
+// =====================================================
+// ORGANIZATIONAL STRUCTURE
+// =====================================================
+
+Table Rostro {
+  id uuid [pk]
+  name varchar(100) [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+Table Community {
+  id uuid [pk]
+  name varchar(100) [not null]
+  rostro_id uuid [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+// =====================================================
+// THIRD PARTY (ENTIDAD BASE)
+// =====================================================
+
+Table ThirdParty {
+  id uuid [pk]
+
+  // Identificación
+  identification_number varchar(50)
+  type_iden IdentificationType [not null]
+  person_type PersonType [not null]
+
+  // Persona Natural
+  first_name varchar(100)
+  last_name varchar(100)
+  birth_date date
+
+  // Persona Jurídica
+  business_name varchar(200)
+  trade_name varchar(200)
+
+  // Contacto
+  email varchar(150)
+  phone varchar(30)
+  address varchar(255)
+  city varchar(100)
+  country varchar(100)
+
+  // Estado
+  is_active boolean [not null, default: true]
+  registered_at timestamp [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+
+  indexes {
+    (identification_number) [unique]
+  }
+}
+
+// =====================================================
+// THIRD PARTY - ROLES / INFO
+// =====================================================
+
+Table SupplierInfo {
+  id uuid [pk]
+  third_party_id uuid [not null, unique]
+
+  bank_account varchar(50)
+  bank_name varchar(100)
+  payment_term_days int [not null, default: 0]
+  tax_regime varchar(100)
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+Table PartnerInfo {
+  id uuid [pk]
+  third_party_id uuid [not null, unique]
+
+  organization varchar(150)
+  partner_since timestamp [not null]
+  partner_type PartnerType [not null]
+  agreement_code varchar(50)
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+Table MemberInfo {
+  id uuid [pk]
+  third_party_id uuid [not null, unique]
+
+  member_code varchar(50)
+  member_since timestamp [not null]
+  ministry varchar(100)
+  status MemberStatus [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+Table EmployeeInfo {
+  id uuid [pk]
+  third_party_id uuid [not null, unique]
+
+  position varchar(100)
+  department varchar(100)
+  hire_date timestamp [not null]
+  termination_date timestamp
+  salary decimal(18,2) [not null]
+  bank_account varchar(50)
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+Table DonorInfo {
+  id uuid [pk]
+  third_party_id uuid [not null, unique]
+
+  first_donation_date timestamp [not null]
+  last_donation_date timestamp
+  total_donated decimal(18,2) [not null, default: 0]
+  is_recurrent boolean [not null, default: false]
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+Table CustomerInfo {
+  id uuid [pk]
+  third_party_id uuid [not null, unique]
+
+  customer_code varchar(50)
+  credit_limit decimal(18,2) [not null, default: 0]
+  payment_term_days int [not null, default: 0]
+  segment CustomerSegment [not null]
+  first_purchase_date timestamp [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+// =====================================================
+// ACCOUNTING CORE
+// =====================================================
+
+Table Account {
+  id uuid [pk]
+  code varchar(20) [not null, unique]
+  name varchar(150) [not null]
+  type AccountType [not null]
+  parent_account_id uuid
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+Table AccountingPeriod {
+  id uuid [pk]
+  year int [not null]
+  month int [not null]
+  status varchar(10) [not null] // OPEN | CLOSED
+
+  closed_at timestamp
+  closed_by uuid
+
+  created_at timestamp [not null]
+  created_by uuid
+
+  indexes {
+    (year, month) [unique]
+  }
+}
+
+// =====================================================
+// JOURNAL (DOUBLE ENTRY)
+// =====================================================
+
+Table JournalVoucher {
+  id uuid [pk]
+  voucher_number varchar(50) [not null, unique]
+  type VoucherType [not null]
+  status VoucherStatus [not null]
+
+  date date [not null]
+  description text
+
+  accounting_period_id uuid [not null]
+  rostro_id uuid [not null]
+  community_id uuid [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+Table JournalVoucherLine {
+  id uuid [pk]
+  journal_voucher_id uuid [not null]
+  account_id uuid [not null]
+
+  amount decimal(18,2) [not null]
+  line_type LineType [not null]
+
+  indexes {
+    (journal_voucher_id)
+  }
+}
+
+// =====================================================
+// FINANCE (BUSINESS LAYER)
+// =====================================================
+
+Table CashAccount {
+  id uuid [pk]
+  name varchar(100) [not null]
+  type CashAccountType [not null]
+  is_active boolean [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+}
+
+Table Income {
+  id uuid [pk]
+  date date [not null]
+  amount decimal(18,2) [not null]
+
+  third_party_id uuid        // Donante u otro tercero
+  cash_account_id uuid [not null]
+
+  community_id uuid [not null]
+
+  journal_voucher_id uuid [not null, unique]
+
+  created_at timestamp [not null]
+  created_by uuid
+}
+
+Table Expense {
+  id uuid [pk]
+  date date [not null]
+  amount decimal(18,2) [not null]
+
+  third_party_id uuid        // Proveedor u otro tercero
+  cash_account_id uuid [not null]
+
+  community_id uuid [not null]
+
+  journal_voucher_id uuid [not null, unique]
+
+  created_at timestamp [not null]
+  created_by uuid
+}
+
+// =====================================================
+// BUDGET
+// =====================================================
+
+Table Budget {
+  id uuid [pk]
+  year int [not null]
+  month int [not null]
+
+  community_id uuid [not null]
+  account_id uuid [not null]
+
+  amount decimal(18,2) [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+
+  indexes {
+    (year, month, community_id, account_id) [unique]
+  }
+}
+
+// =====================================================
+// APPROVAL WORKFLOW
+// =====================================================
+
+Table ApprovalRequest {
+  id uuid [pk]
+
+  entity_name varchar(50) [not null] // "Expense", "Income"
+  entity_id uuid [not null]
+
+  status varchar(20) [not null] // PENDING | APPROVED | REJECTED
+
+  requested_by uuid [not null]
+  approved_by uuid
+  approved_at timestamp
+
+  created_at timestamp [not null]
+}
+
+// =====================================================
+// REPORTING / CERTIFICATES
+// =====================================================
+
+Table DonationCertificate {
+  id uuid [pk]
+  certificate_number varchar(50) [not null, unique]
+
+  third_party_id uuid [not null]   // FK a ThirdParty (rol DonorInfo)
+  journal_voucher_id uuid [not null, unique]
+
+  amount decimal(18,2) [not null]
+  issue_date date [not null]
+
+  pdf_url varchar(255)
+
+  created_at timestamp [not null]
+}
+
+// =====================================================
+// AUDIT
+// =====================================================
+
+Table AdjustmentLog {
+  id uuid [pk]
+  journal_voucher_id uuid [not null]
+
+  reason text [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+}
+
+// =====================================================
+// RELATIONSHIPS
+// =====================================================
+
+// Security
+Ref: User.role_id > Role.id
+
+// Org structure
+Ref: Community.rostro_id > Rostro.id
+
+// ThirdParty roles (1-to-1 opcionales)
+Ref: SupplierInfo.third_party_id - ThirdParty.id
+Ref: PartnerInfo.third_party_id - ThirdParty.id
+Ref: MemberInfo.third_party_id - ThirdParty.id
+Ref: EmployeeInfo.third_party_id - ThirdParty.id
+Ref: DonorInfo.third_party_id - ThirdParty.id
+Ref: CustomerInfo.third_party_id - ThirdParty.id
+
+// Accounting
+Ref: Account.parent_account_id > Account.id
+
+Ref: JournalVoucher.accounting_period_id > AccountingPeriod.id
+Ref: JournalVoucher.rostro_id > Rostro.id
+Ref: JournalVoucher.community_id > Community.id
+
+Ref: JournalVoucherLine.journal_voucher_id > JournalVoucher.id
+Ref: JournalVoucherLine.account_id > Account.id
+
+// Finance
+Ref: Income.third_party_id > ThirdParty.id
+Ref: Income.cash_account_id > CashAccount.id
+Ref: Income.community_id > Community.id
+Ref: Income.journal_voucher_id > JournalVoucher.id
+
+Ref: Expense.third_party_id > ThirdParty.id
+Ref: Expense.cash_account_id > CashAccount.id
+Ref: Expense.community_id > Community.id
+Ref: Expense.journal_voucher_id > JournalVoucher.id
+
+// Budget
+Ref: Budget.community_id > Community.id
+Ref: Budget.account_id > Account.id
+
+// Certificates
+Ref: DonationCertificate.third_party_id > ThirdParty.id
+Ref: DonationCertificate.journal_voucher_id > JournalVoucher.id
+
+// Audit
+Ref: AdjustmentLog.journal_voucher_id > JournalVoucher.id
