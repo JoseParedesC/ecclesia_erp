@@ -28,6 +28,10 @@ public class UpdateAccountHandler
         if (entity is null)
             return Result<AccountDetailDto>.Failure([$"Account con Id {command.Id} no encontrada."]);
 
+        if (await _repository.ExistsByCodeAsync(command.Code!, excludeId: command.Id, cancellationToken: cancellationToken))
+            return Result<AccountDetailDto>.Failure([$"Ya existe una cuenta con el código {command.Code}."]);
+            
+
         entity.Update(
             code:            command.Code,
             name:            command.Name,

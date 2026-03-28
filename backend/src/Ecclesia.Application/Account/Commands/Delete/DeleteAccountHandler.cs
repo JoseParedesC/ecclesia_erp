@@ -25,7 +25,15 @@ public class DeleteAccountHandler
             return Result<AccountDetailDto>.Failure(errors);
         }
 
-        var entity = await _repository.DeleteAsync(id, cancellationToken);
+        var entity = await _repository.GetByIdAsync(id, cancellationToken);
+        if (entity is null)
+            return Result<AccountDetailDto>.Failure([$"Account con Id {id} no encontrada."]);
+
+        // Verificar que no tenga cuentas hijas antes de eliminar
+        if (entity.ChildAccounts.Any())
+            return Result<AccountDetailDto>.Failure(["No se puede eliminar una cuenta que tiene subcuentas."]);
+
+        await _repository.DeleteAsync(id, cancellationToken);
         return Result<AccountDetailDto>.Success(entity.ToDto());
     }
 }

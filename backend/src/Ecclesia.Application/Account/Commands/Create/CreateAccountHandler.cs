@@ -25,6 +25,9 @@ public class CreateAccountHandler
             return Result<AccountDetailDto>.Failure(errors);
         }
 
+        if (await _repository.ExistsByCodeAsync(command.Code!, cancellationToken: cancellationToken))
+            return Result<AccountDetailDto>.Failure([$"Ya existe una cuenta con el código {command.Code}."]);
+
         var entity = new AccountEntity(
             code:            command.Code,
             name:            command.Name,

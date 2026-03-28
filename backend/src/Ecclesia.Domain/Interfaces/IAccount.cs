@@ -11,4 +11,5 @@ public interface IAccountRepository
     Task<AccountEntity> CreateAsync (AccountEntity entity, CancellationToken cancellationToken = default);
     Task<AccountEntity> UpdateAsync (AccountEntity entity, CancellationToken cancellationToken = default);
     Task<AccountEntity> DeleteAsync (Guid id, CancellationToken cancellationToken = default);
+    Task<bool> ExistsByCodeAsync(string code, Guid? excludeId = null, CancellationToken cancellationToken = default);
 }

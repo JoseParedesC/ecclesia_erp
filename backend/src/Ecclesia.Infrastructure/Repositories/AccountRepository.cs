@@ -100,4 +100,9 @@ public class AccountRepository : IAccountRepository
         await _context.SaveChangesAsync(cancellationToken);
         return entity;
     }
+
+    public async Task<bool> ExistsByCodeAsync(string code, Guid? excludeId = null, CancellationToken cancellationToken = default)
+        => await _context.Accounts
+            .AsNoTracking()
+            .AnyAsync(x => x.Code == code && x.Id != excludeId, cancellationToken);
 }
