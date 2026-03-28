@@ -1,0 +1,316 @@
+// =====================================================
+// ENUMS
+// =====================================================
+
+Enum VoucherType {
+  INCOME
+  EXPENSE
+  ADJUSTMENT
+  REVERSAL
+}
+
+Enum VoucherStatus {
+  DRAFT
+  POSTED
+  CANCELLED
+}
+
+Enum LineType {
+  DEBIT
+  CREDIT
+}
+
+Enum AccountType {
+  ASSET
+  LIABILITY
+  EQUITY
+  INCOME
+  EXPENSE
+}
+
+Enum CashAccountType {
+  CASH
+  BANK
+}
+
+// =====================================================
+// CORE - SECURITY
+// =====================================================
+
+Table Role {
+  id uuid [pk]
+  name varchar(50) [not null, unique]
+}
+
+Table User {
+  id uuid [pk]
+  name varchar(100) [not null]
+  email varchar(150) [not null, unique]
+  role_id uuid [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+}
+
+// =====================================================
+// ORGANIZATIONAL STRUCTURE
+// =====================================================
+
+Table Rostro {
+  id uuid [pk]
+  name varchar(100) [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+Table Community {
+  id uuid [pk]
+  name varchar(100) [not null]
+  rostro_id uuid [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+// =====================================================
+// ACCOUNTING CORE
+// =====================================================
+
+Table Account {
+  id uuid [pk]
+  code varchar(20) [not null, unique]
+  name varchar(150) [not null]
+  type AccountType [not null]
+  parent_account_id uuid
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+Table AccountingPeriod {
+  id uuid [pk]
+  year int [not null]
+  month int [not null]
+  status varchar(10) [not null] // OPEN | CLOSED
+
+  closed_at timestamp
+  closed_by uuid
+
+  created_at timestamp [not null]
+  created_by uuid
+
+  indexes {
+    (year, month) [unique]
+  }
+}
+
+// =====================================================
+// JOURNAL (DOUBLE ENTRY)
+// =====================================================
+
+Table JournalVoucher {
+  id uuid [pk]
+  voucher_number varchar(50) [not null, unique]
+  type VoucherType [not null]
+  status VoucherStatus [not null]
+
+  date date [not null]
+  description text
+
+  accounting_period_id uuid [not null]
+  rostro_id uuid [not null]
+  community_id uuid [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+  updated_at timestamp
+  updated_by uuid
+}
+
+Table JournalVoucherLine {
+  id uuid [pk]
+  journal_voucher_id uuid [not null]
+  account_id uuid [not null]
+
+  amount decimal(18,2) [not null]
+  line_type LineType [not null]
+
+  indexes {
+    (journal_voucher_id)
+  }
+}
+
+// =====================================================
+// FINANCE (BUSINESS LAYER)
+// =====================================================
+
+Table CashAccount {
+  id uuid [pk]
+  name varchar(100) [not null]
+  type CashAccountType [not null]
+  is_active boolean [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+}
+
+Table Donor {
+  id uuid [pk]
+  full_name varchar(150) [not null]
+  document_type varchar(20)
+  document_number varchar(50)
+  is_company boolean [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+
+  indexes {
+    (document_type, document_number) [unique]
+  }
+}
+
+Table Income {
+  id uuid [pk]
+  date date [not null]
+  amount decimal(18,2) [not null]
+
+  donor_id uuid
+  cash_account_id uuid [not null]
+
+  community_id uuid [not null]
+
+  journal_voucher_id uuid [not null, unique]
+
+  created_at timestamp [not null]
+  created_by uuid
+}
+
+Table Expense {
+  id uuid [pk]
+  date date [not null]
+  amount decimal(18,2) [not null]
+
+  cash_account_id uuid [not null]
+
+  community_id uuid [not null]
+
+  journal_voucher_id uuid [not null, unique]
+
+  created_at timestamp [not null]
+  created_by uuid
+}
+
+// =====================================================
+// BUDGET
+// =====================================================
+
+Table Budget {
+  id uuid [pk]
+  year int [not null]
+  month int [not null]
+
+  community_id uuid [not null]
+  account_id uuid [not null]
+
+  amount decimal(18,2) [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+
+  indexes {
+    (year, month, community_id, account_id) [unique]
+  }
+}
+
+// =====================================================
+// APPROVAL WORKFLOW
+// =====================================================
+
+Table ApprovalRequest {
+  id uuid [pk]
+
+  entity_name varchar(50) [not null] // "Expense", "Income"
+  entity_id uuid [not null]
+
+  status varchar(20) [not null] // PENDING | APPROVED | REJECTED
+
+  requested_by uuid [not null]
+  approved_by uuid
+  approved_at timestamp
+
+  created_at timestamp [not null]
+}
+
+// =====================================================
+// REPORTING / CERTIFICATES
+// =====================================================
+
+Table DonationCertificate {
+  id uuid [pk]
+  certificate_number varchar(50) [not null, unique]
+
+  donor_id uuid [not null]
+  journal_voucher_id uuid [not null, unique]
+
+  amount decimal(18,2) [not null]
+  issue_date date [not null]
+
+  pdf_url varchar(255)
+
+  created_at timestamp [not null]
+}
+
+// =====================================================
+// AUDIT
+// =====================================================
+
+Table AdjustmentLog {
+  id uuid [pk]
+  journal_voucher_id uuid [not null]
+
+  reason text [not null]
+
+  created_at timestamp [not null]
+  created_by uuid
+}
+
+// =====================================================
+// RELATIONSHIPS
+// =====================================================
+
+Ref: User.role_id > Role.id
+
+Ref: Community.rostro_id > Rostro.id
+
+Ref: Account.parent_account_id > Account.id
+
+Ref: JournalVoucher.accounting_period_id > AccountingPeriod.id
+Ref: JournalVoucher.rostro_id > Rostro.id
+Ref: JournalVoucher.community_id > Community.id
+
+Ref: JournalVoucherLine.journal_voucher_id > JournalVoucher.id
+Ref: JournalVoucherLine.account_id > Account.id
+
+Ref: Income.donor_id > Donor.id
+Ref: Income.cash_account_id > CashAccount.id
+Ref: Income.community_id > Community.id
+Ref: Income.journal_voucher_id > JournalVoucher.id
+
+Ref: Expense.cash_account_id > CashAccount.id
+Ref: Expense.community_id > Community.id
+Ref: Expense.journal_voucher_id > JournalVoucher.id
+
+Ref: Budget.community_id > Community.id
+Ref: Budget.account_id > Account.id
+
+Ref: DonationCertificate.donor_id > Donor.id
+Ref: DonationCertificate.journal_voucher_id > JournalVoucher.id
+
+Ref: AdjustmentLog.journal_voucher_id > JournalVoucher.id

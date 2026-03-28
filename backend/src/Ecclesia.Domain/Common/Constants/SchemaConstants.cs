@@ -13,4 +13,10 @@ public static class SchemaConstants
         public const string schema = "ecclesia";
     }
 
+    public static class Accounting
+    {
+        public const string schema = "accounting";
+    }
+
+
 }
