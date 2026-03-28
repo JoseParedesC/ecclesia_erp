@@ -47,11 +47,16 @@ public class IncomeRepository : IIncomeRepository
             dbQuery = !string.IsNullOrWhiteSpace(query.SearchField)
                 ? query.SearchField.ToLower() switch  // busca solo en el campo especificado
                 {
-                    "name"     => dbQuery.Where(u => EF.Functions.ILike(u.ThirdParty.TradeName, pattern)),
+                    "name"     => dbQuery.Where(u => 
+                                    u.ThirdParty != null
+                                    && u.ThirdParty.TradeName != null
+                                    && EF.Functions.ILike(u.ThirdParty.TradeName, pattern)),
                     _          => dbQuery
                 }
                 : dbQuery.Where(u =>  // busca en todos los campos
-                    EF.Functions.ILike(u.ThirdParty.TradeName, pattern)
+                    u.ThirdParty != null
+                    && u.ThirdParty.TradeName != null
+                    && EF.Functions.ILike(u.ThirdParty.TradeName, pattern)
                 );
         }
 
