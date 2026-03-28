@@ -9,6 +9,11 @@ public class VoucherNumberGenerator : IVoucherNumberGenerator
 {
     private readonly AppDbContext _context;
 
+    public VoucherNumberGenerator(AppDbContext context)
+    {
+        _context = context;
+    }
+
     public async Task<string> GenerateAsync(VoucherType type, DateTime date, CancellationToken ct)
     {
         var prefix = type.ToString().Substring(0, 3).ToUpper(); // INC, EXP

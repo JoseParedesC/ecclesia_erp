@@ -5,6 +5,11 @@ public class CommunityRepository : ICommunityRepository
 {
     private readonly AppDbContext _context;
 
+    public CommunityRepository(AppDbContext context)
+    {
+        _context = context;
+    }
+
     public async Task<Guid> GetRostroIdAsync(Guid communityId, CancellationToken ct)
     {
         var community = await _context.Communities
