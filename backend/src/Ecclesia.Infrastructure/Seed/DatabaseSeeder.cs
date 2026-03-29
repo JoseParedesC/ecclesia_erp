@@ -2,6 +2,7 @@ using Ecclesia.Domain.Entities.Users;
 using Ecclesia.Domain.Entities.Roles;
 using Ecclesia.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Ecclesia.Domain.Common.Constants.SchemaConstants;
 
 namespace Ecclesia.Infrastructure.Data;
 
@@ -16,6 +17,18 @@ public static class DatabaseSeeder
         // Crear rol admin
         var adminRole = new RoleEntity("admin", "system admin");
         await context.Roles.AddAsync(adminRole);
+        await context.SaveChangesAsync();
+
+        // Crear permisos para el rol admin
+        var permissions = new List<RolePermissionEntity>
+        {
+            new(adminRole.Id, SchemaConstants.AccessManager.schema, "users", "create"),
+            new(adminRole.Id, SchemaConstants.AccessManager.schema, "users", "read"),
+            new(adminRole.Id, SchemaConstants.AccessManager.schema, "users", "update"),
+            new(adminRole.Id, SchemaConstants.AccessManager.schema, "users", "delete"),
+        };
+        
+        await context.RolePermissions.AddRangeAsync(permissions);
         await context.SaveChangesAsync();
 
         // Crear usuario admin

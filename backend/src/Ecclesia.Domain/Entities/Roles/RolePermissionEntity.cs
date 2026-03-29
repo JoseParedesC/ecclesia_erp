@@ -9,4 +9,16 @@ public class RolePermissionEntity : BaseEntity
 
     // Navegación
     public RoleEntity Role { get; set; } = null!;
+
+    public RolePermissionEntity()
+    {
+    }
+
+    public RolePermissionEntity(Guid roleId, string schema, string option, string permission)
+    {
+        RoleId = roleId;
+        Schema = schema;
+        Option = option;
+        Permission = permission;
+    }
 }
