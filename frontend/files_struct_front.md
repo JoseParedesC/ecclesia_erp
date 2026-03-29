@@ -55,3 +55,20 @@ features/accountingPeriod/
       └── AccountingPeriodsPage.tsx ← Página principal con 4 summary cards + tabla
 
       
+----------------------------------------------------------------------------------------------------------------
+features/users/
+ ├── user.types.ts            ← User, Role, PagedResult<T>, PagedQuery, todos los Request
+ ├── user.service.ts          ← getAll (paginado), getById, create, update, remove, assignRole
+ ├── role.service.ts          ← getAll de roles (para los selectores)
+ ├── hooks/
+ │    └── useUsers.ts         ← useUsers (paginado), useRoles, useCreateUser,
+ │                               useUpdateUser, useDeleteUser, useAssignRole
+ ├── components/
+ │    ├── UserFormModal        ← Crear/editar: nombre, email, username, password, rol
+ │    └── AssignRoleModal      ← Radio cards por rol, muestra el usuario y su rol actual
+ └── pages/
+      └── UsersPage.tsx        ← Tabla paginada con búsqueda debounced
+
+shared/
+ ├── hooks/useDebounce.ts      ← Reutilizable en cualquier módulo con búsqueda
+ └── components/Pagination     ← Paginador con ventana inteligente (1…n…último)
