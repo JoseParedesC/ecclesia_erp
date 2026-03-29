@@ -1,0 +1,62 @@
+/* ============================================
+   ECCLESIA ERP — GLOBAL THEME
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+:root {
+  /* ── Brand Palette ── */
+  --color-obsidian:    #0d0f14;
+  --color-deep:        #13161e;
+  --color-surface:     #1a1f2b;
+  --color-elevated:    #222839;
+  --color-border:      #2e3548;
+  --color-border-soft: #1e2536;
+
+  /* ── Gold Accent ── */
+  --color-gold:        #c9a84c;
+  --color-gold-light:  #e8c96a;
+  --color-gold-muted:  #6e5a2b;
+  --color-gold-glow:   rgba(201, 168, 76, 0.15);
+
+  /* ── Text ── */
+  --color-text-primary:   #f0ece4;
+  --color-text-secondary: #8a90a0;
+  --color-text-muted:     #505870;
+
+  /* ── Status ── */
+  --color-error:        #e05252;
+  --color-error-bg:     rgba(224, 82, 82, 0.08);
+  --color-success:      #52c07a;
+  --color-success-bg:   rgba(82, 192, 122, 0.08);
+
+  /* ── Typography ── */
+  --font-display: 'Cinzel', serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  /* ── Spacing ── */
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  16px;
+
+  /* ── Shadows ── */
+  --shadow-card: 0 24px 64px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.04) inset;
+  --shadow-glow: 0 0 40px rgba(201, 168, 76, 0.12);
+
+  /* ── Transitions ── */
+  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  font-family: var(--font-body);
+  background-color: var(--color-obsidian);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+}

@@ -12,4 +12,14 @@ public class UserEntity: BaseEntity{
     // Navegación
     public ICollection<UserRoleEntity> UserRoles { get; set; } = new List<UserRoleEntity>();
 
+    public UserEntity() { }
+
+    public UserEntity(string name, string email, string userName, string passwordHash)
+    {
+        Name = name;
+        Email = email;
+        UserName = userName;
+        PasswordHash = passwordHash;
+    }
+
 }
