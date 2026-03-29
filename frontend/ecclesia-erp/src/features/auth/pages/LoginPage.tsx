@@ -4,8 +4,8 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLoginForm } from '../auth/hooks/useLoginForm';
-import { useLogin } from '../auth/hooks/useLogin';
+import { useLoginForm } from '../hooks/useLoginForm';
+import { useLogin } from '../hooks/useLogin';
 import styles from './LoginPage.module.css';
 
 export const LoginPage: React.FC = () => {
