@@ -1,0 +1,226 @@
+/* ============================================
+   features/dashboard/components/Sidebar.module.css
+   ============================================ */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  min-height: 100vh;
+  background: var(--color-deep);
+  border-right: 1px solid var(--color-border-soft);
+  transition: width 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.collapsed {
+  width: 64px;
+}
+
+/* ── Brand ── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1rem;
+  min-height: 64px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.logoMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(201, 168, 76, 0.1);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.brandName {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-gold-light);
+  text-transform: uppercase;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.collapsed .brandName {
+  opacity: 0;
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: var(--color-border-soft);
+  margin: 0 1rem;
+  flex-shrink: 0;
+}
+
+/* ── Nav ── */
+.nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.75rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.navList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 0.5rem;
+}
+
+/* ── Link ── */
+.link,
+.groupBtn,
+.subLink {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.6rem 0.65rem;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 0.855rem;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: color 0.18s, background 0.18s;
+  text-align: left;
+}
+
+.link:hover,
+.groupBtn:hover,
+.subLink:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.linkActive {
+  color: var(--color-gold-light) !important;
+  background: rgba(201, 168, 76, 0.1) !important;
+}
+
+.linkActive .icon {
+  color: var(--color-gold);
+}
+
+.groupBtnActive {
+  color: var(--color-gold-light);
+}
+
+/* ── Icon ── */
+.icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: color 0.18s;
+}
+
+/* ── Label ── */
+.label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 1;
+  transition: opacity 0.15s;
+}
+
+.collapsed .label {
+  opacity: 0;
+  width: 0;
+}
+
+/* ── Chevron ── */
+.chevron {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.18s;
+}
+
+.chevronOpen {
+  transform: rotate(90deg);
+}
+
+/* ── Group ── */
+.group {
+  list-style: none;
+}
+
+/* ── SubList ── */
+.subList {
+  list-style: none;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  padding-left: 0.75rem;
+}
+
+.subListOpen {
+  max-height: 400px;
+}
+
+.subLink {
+  font-size: 0.815rem;
+  color: var(--color-text-muted);
+  padding: 0.5rem 0.65rem;
+}
+
+.subLink:hover {
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.subLinkActive {
+  color: var(--color-gold) !important;
+  background: rgba(201, 168, 76, 0.07) !important;
+}
+
+.subLinkActive .icon {
+  color: var(--color-gold);
+}
+
+/* ── Toggle button ── */
+.toggleBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 1rem 1rem;
+  border-top: 1px solid var(--color-border-soft);
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  transition: color 0.18s;
+}
+
+.toggleBtn:hover {
+  color: var(--color-text-secondary);
+}

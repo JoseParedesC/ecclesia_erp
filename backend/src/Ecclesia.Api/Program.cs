@@ -58,6 +58,19 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
            .UseSnakeCaseNamingConvention());
 
+//CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+
 // ── Authentication ────────────────────────────────────────────────────────────
 builder.Services.AddAuthentication(options =>
 {
@@ -65,6 +78,13 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme    = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
+    var jwtKey = builder.Configuration["Jwt:Key"];
+
+    if (string.IsNullOrWhiteSpace(jwtKey))
+        throw new Exception("JWT Key is not configured");
+
+    var key = Encoding.UTF8.GetBytes(jwtKey);
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer           = true,
@@ -73,8 +93,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer              = builder.Configuration["Jwt:Issuer"],
         ValidAudience            = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey         = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        IssuerSigningKey         = new SymmetricSecurityKey(key)
     };
 });
 
@@ -162,6 +181,8 @@ builder.Services.AddScoped<ReopenAccountingPeriodHandler>();
 // ── Pipeline ──────────────────────────────────────────────────────────────────
 var app = builder.Build();
 
+app.UseCors("AllowFrontend");
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -182,6 +203,19 @@ app.MapThirdPartyEndpoints();
 app.MapAccountEndpoints();
 app.MapAccountingPeriodEndpoints();
 
+// Endpoint de desarrollo para generar hash de contraseña
+if (app.Environment.IsDevelopment())
+{
+    app.MapGet("/dev/hash/{password}", (string password) =>
+        Results.Ok(new { hash = BCrypt.Net.BCrypt.HashPassword(password) })
+    ).AllowAnonymous();
+}
 
+// Seed inicial
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await DatabaseSeeder.SeedAsync(context);
+}
 
 app.Run();
