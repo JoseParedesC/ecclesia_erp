@@ -10,6 +10,7 @@ import { DashboardHome }           from '../../features/dashboard/pages/Dashboar
 import { AccountsPage }            from '../../features/account/pages/AccountsPage';
 import { AccountingPeriodsPage }   from '../../features/accountingPeriod/pages/AccountingPeriodsPage';
 import { authService }             from '../../features/auth/auth.service';
+import { UsersPage } from '../../features';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const token = authService.getToken();
@@ -31,6 +32,9 @@ export const AppRouter: React.FC = () => (
         <Route index                         element={<DashboardHome />} />
         <Route path="accounting/accounts"    element={<AccountsPage />} />
         <Route path="accounting/periods"     element={<AccountingPeriodsPage />} />
+        <Route path="settings/users"         element={<UsersPage />} />
+        <Route path="settings/roles"         element={<AccountingPeriodsPage />} />
+        <Route path="settings/permissions"   element={<AccountingPeriodsPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

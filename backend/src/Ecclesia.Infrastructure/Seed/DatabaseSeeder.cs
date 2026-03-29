@@ -1,7 +1,7 @@
 using Ecclesia.Domain.Entities.Users;
 using Ecclesia.Domain.Entities.Roles;
-using Ecclesia.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Ecclesia.Domain.Common.Constants;
 
 namespace Ecclesia.Infrastructure.Data;
 
@@ -16,6 +16,24 @@ public static class DatabaseSeeder
         // Crear rol admin
         var adminRole = new RoleEntity("admin", "system admin");
         await context.Roles.AddAsync(adminRole);
+        await context.SaveChangesAsync();
+
+        // Crear permisos para el rol admin
+        var permissions = new List<RolePermissionEntity>
+        {
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.User, RolePermissionConstants.Permission.Read),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.User, RolePermissionConstants.Permission.Create),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.User, RolePermissionConstants.Permission.Update),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.User, RolePermissionConstants.Permission.Delete),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.User, RolePermissionConstants.Permission.Assign),
+
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.Roles, RolePermissionConstants.Permission.Create),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.Roles, RolePermissionConstants.Permission.Delete),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.Roles, RolePermissionConstants.Permission.Update),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.Roles, RolePermissionConstants.Permission.Read),
+        };
+        
+        await context.RolePermissions.AddRangeAsync(permissions);
         await context.SaveChangesAsync();
 
         // Crear usuario admin

@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLoginForm } from '../hooks/useLoginForm';
 import { useLogin } from '../hooks/useLogin';
 import styles from './LoginPage.module.css';
+import { ApiError } from '../../../shared/services/apiClient';
 
 export const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -53,7 +54,11 @@ export const LoginPage: React.FC = () => {
               <circle cx="8" cy="8" r="7" stroke="var(--color-error)" strokeWidth="1.5" />
               <path d="M8 5v4M8 11v.5" stroke="var(--color-error)" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
-            <span>{error?.message ?? 'Error al iniciar sesión'}</span>
+            <span>{
+              error instanceof ApiError
+              ? error.message || error.errors?.[0]
+              : 'Error al iniciar sesión'
+              }</span>
           </div>
         )}
 
