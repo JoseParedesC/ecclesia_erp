@@ -1,8 +1,7 @@
 using Ecclesia.Domain.Entities.Users;
 using Ecclesia.Domain.Entities.Roles;
-using Ecclesia.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Ecclesia.Domain.Common.Constants.SchemaConstants;
+using Ecclesia.Domain.Common.Constants;
 
 namespace Ecclesia.Infrastructure.Data;
 
@@ -22,10 +21,11 @@ public static class DatabaseSeeder
         // Crear permisos para el rol admin
         var permissions = new List<RolePermissionEntity>
         {
-            new(adminRole.Id, SchemaConstants.AccessManager.schema, "users", "create"),
-            new(adminRole.Id, SchemaConstants.AccessManager.schema, "users", "read"),
-            new(adminRole.Id, SchemaConstants.AccessManager.schema, "users", "update"),
-            new(adminRole.Id, SchemaConstants.AccessManager.schema, "users", "delete"),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.User, RolePermissionConstants.Permission.Read),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.User, RolePermissionConstants.Permission.Create),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.User, RolePermissionConstants.Permission.Update),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.User, RolePermissionConstants.Permission.Delete),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.User, RolePermissionConstants.Permission.Assign),
         };
         
         await context.RolePermissions.AddRangeAsync(permissions);
