@@ -35,3 +35,23 @@ src/
  │    └── DeleteConfirmModal   ← Confirmación de eliminación
  └── pages/
       └── AccountsPage.tsx     ← Página principal que orquesta todo
+
+
+
+----------------------------------------------------------------------------------------------------------------
+
+features/accountingPeriod/
+ ├── accountingPeriod.types.ts      ← AccountingPeriod, PeriodStatus, CreatePeriodRequest
+ ├── accountingPeriod.service.ts    ← getAll, getCurrent, create, close via apiClient
+ ├── hooks/
+ │    └── useAccountingPeriods.ts   ← useQuery x2 + useMutation x2 (create/close)
+ ├── utils/
+ │    └── periodUtils.ts            ← formatPeriod, nextPeriod, sortPeriods
+ ├── components/
+ │    ├── PeriodStatusBadge         ← dot animado verde (OPEN) / gris (CLOSED)
+ │    ├── CreatePeriodModal         ← selects mes/año, pre-populated con nextPeriod()
+ │    └── ClosePeriodModal          ← confirmación con warning irreversible
+ └── pages/
+      └── AccountingPeriodsPage.tsx ← Página principal con 4 summary cards + tabla
+
+      
