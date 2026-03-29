@@ -8,4 +8,12 @@ public class RoleEntity : BaseEntity
     // Navegación
     public ICollection<UserRoleEntity>? UserRoles { get; set; }
     public ICollection<RolePermissionEntity>? Permissions { get; set; }
+
+    public RoleEntity() { }
+
+    public RoleEntity(string name, string description = "")
+    {
+        Name = name;
+        Description = description;
+    }
 }

@@ -10,4 +10,12 @@ public class UserRoleEntity : BaseEntity
     // Navegación
     public UserEntity User { get; set; } = null!;
     public RoleEntity Role { get; set; } = null!;
+
+    public UserRoleEntity() { }
+
+    public UserRoleEntity(Guid userId, Guid roleId)
+    {
+        UserId = userId;
+        RoleId = roleId;
+    }
 }

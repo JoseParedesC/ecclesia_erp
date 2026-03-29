@@ -19,7 +19,14 @@ public class TokenService : ITokenService
 
     public string GenerateToken(UserEntity user, IEnumerable<string> permissions)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+        // var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+
+        var jwtKey = _configuration["Jwt:Key"];
+
+        if (string.IsNullOrWhiteSpace(jwtKey))
+            throw new Exception("JWT Key is not configured");
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new List<Claim>

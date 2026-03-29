@@ -1,0 +1,18 @@
+// ============================================
+// App.tsx
+// ============================================
+
+import React from 'react';
+import { AppProviders } from './app/providers/AppProviders';
+import { AppRouter } from './app/router/AppRouter';
+
+import './styles/theme.css';
+
+const App: React.FC = () => (
+  <AppProviders>
+    <AppRouter />
+  </AppProviders>
+);
+
+export default App;
+
