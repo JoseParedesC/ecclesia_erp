@@ -23,4 +23,7 @@ public class AccountingPeriodEntity : BaseEntity
     {
         Status = StatusDocument.CLOSED;
     }
+
+    public DateTime GetPeriodDate() => new DateTime(Year, Month, 1);
+
 }

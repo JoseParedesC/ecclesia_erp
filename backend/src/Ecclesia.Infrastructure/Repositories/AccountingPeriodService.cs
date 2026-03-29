@@ -1,4 +1,5 @@
 
+using Ecclesia.Domain.Common;
 using Ecclesia.Domain.Entities.AccountingPeriod;
 using Ecclesia.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -35,4 +36,33 @@ public class AccountingPeriodService : IAccountingPeriodRepository
                 p.CommunityId == communityId &&
                 p.Status == StatusDocument.OPEN,
                 cancellationToken);
+
+
+    public async Task<AccountingPeriodEntity> CreateOpenPeriodAsync(AccountingPeriodEntity newPeriod, CancellationToken ct)
+    {
+        var period = await _context.AccountingPeriods
+            .FirstOrDefaultAsync(x =>
+                x.Year == newPeriod.Year &&
+                x.Month == newPeriod.Month, ct);
+
+        await _context.AccountingPeriods.AddAsync(newPeriod, ct);
+
+        return newPeriod;
+    }
+
+    public async Task<AccountingPeriodEntity?> GetPeriodAsync(DateTime date, CancellationToken ct)
+    {
+        var period = await _context.AccountingPeriods
+            .FirstOrDefaultAsync(x =>
+                x.Year == date.Year &&
+                x.Month == date.Month, ct);
+
+        return period;
+    }
+
+    public async Task<int> SaveChangesAsync(CancellationToken ct)
+    {
+        return await _context.SaveChangesAsync(ct);   
+    }
+
 }
