@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LoginPage } from '../../features/pages/LoginPage';
 import { DashboardLayout } from '../../features/dashboard/layout/DashboardLayout';
 import { DashboardHome } from '../../features/dashboard/pages/DashboardHome';
+import { AccountsPage } from '../../features/account/pages/AccountsPage';
 import { authService } from '../../features/auth/auth.service';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -26,7 +27,8 @@ export const AppRouter: React.FC = () => (
           </PrivateRoute>
         }
       >
-        <Route index element={<DashboardHome />} />
+        <Route index                        element={<DashboardHome />} />
+        <Route path="accounting/accounts"   element={<AccountsPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
