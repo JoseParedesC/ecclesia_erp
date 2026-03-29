@@ -1,5 +1,6 @@
 using Ecclesia.Application.Accounts.Commands.UpdateAccount;
 using Ecclesia.Application.Accounts.DTOs;
+using Ecclesia.Domain.Common.Constants.Permissions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecclesia.Api.Endpoints.Accounts;
@@ -12,6 +13,7 @@ public static class Update
             .WithName("UpdateAccount")
             .WithSummary("Update account")
             .WithDescription("Updates an existing account.")
+            .RequireAuthorization(EcclesiaPermissions.ACCOUNT.UPDATE)
             .Produces<AccountDetailDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest)

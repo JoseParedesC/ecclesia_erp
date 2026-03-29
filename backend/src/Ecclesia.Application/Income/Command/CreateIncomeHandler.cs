@@ -4,6 +4,7 @@ using Ecclesia.Domain.Common.Constants.Accounting;
 using Ecclesia.Domain.Entities.Income;
 using Ecclesia.Domain.Entities.JournalVoucher;
 using Ecclesia.Domain.Interfaces;
+using Ecclesia.Domain.Repositories;
 
 namespace Ecclesia.Application.Incomes.Commands.CreateIncome;
 
@@ -40,8 +41,8 @@ public class CreateIncomeHandler
         }
 
         // Verificar periodo contable abierto
-        var period = await _accountingPeriodRepository.GetOpenPeriodAsync(createDto.CommunityId, cancellationToken);
-        if (period is null)
+        var period = await _accountingPeriodRepository.GetByYearMonthAsync(createDto.Date.Year, createDto.Date.Month, cancellationToken);
+        if (period is null || period.Status == StatusDocument.CLOSED)
             return Result<Guid>.Failure("No existe un período contable abierto para esta comunidad.");
 
         // Generar número de voucher
