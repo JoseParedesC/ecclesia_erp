@@ -1,5 +1,6 @@
 using Ecclesia.Application.Accounts.Commands.CreateAccount;
 using Ecclesia.Application.Accounts.DTOs;
+using Ecclesia.Domain.Common.Constants.Permissions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecclesia.Api.Endpoints.Accounts;
@@ -12,6 +13,7 @@ public static class Create
             .WithName("CreateAccount")
             .WithSummary("Create account")
             .WithDescription("Creates a new account.")
+            .RequireAuthorization(EcclesiaPermissions.ACCOUNT.CREATE)
             .Produces<AccountDetailDto>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status401Unauthorized);

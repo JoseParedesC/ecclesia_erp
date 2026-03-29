@@ -1,5 +1,6 @@
 using Ecclesia.Application.Accounts.Commands.DeleteAccount;
 using Ecclesia.Application.Accounts.DTOs;
+using Ecclesia.Domain.Common.Constants.Permissions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecclesia.Api.Endpoints.Accounts;
@@ -12,6 +13,7 @@ public static class Delete
             .WithName("DeleteAccount")
             .WithSummary("Delete account")
             .WithDescription("Deletes an account by its unique identifier.")
+            .RequireAuthorization(EcclesiaPermissions.ACCOUNT.DELETE)
             .Produces<AccountDetailDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized);

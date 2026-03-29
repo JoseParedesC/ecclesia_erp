@@ -21,17 +21,33 @@ public static class EcclesiaPermissions
 
     public static class INCOME
     {
-        public const string READ   = "access_manager.income.read";
-        public const string CREATE = "access_manager.income.create";
-        public const string UPDATE = "access_manager.income.update";
-        public const string DELETE = "access_manager.income.delete";
+        public const string READ   = "ecclesia.income.read";
+        public const string CREATE = "ecclesia.income.create";
+        public const string UPDATE = "ecclesia.income.update";
+        public const string DELETE = "ecclesia.income.delete";
     }
 
     public static class THIRD_PARTIES
     {
-        public const string READ   = "access_manager.third-parties.read";
-        public const string CREATE = "access_manager.third-parties.create";
-        public const string UPDATE = "access_manager.third-parties.update";
-        public const string DELETE = "access_manager.third-parties.delete";
+        public const string READ   = "ecclesia.third-parties.read";
+        public const string CREATE = "ecclesia.third-parties.create";
+        public const string UPDATE = "ecclesia.third-parties.update";
+        public const string DELETE = "ecclesia.third-parties.delete";
+    }
+
+    public static class ACCOUNTING_PERIOD
+    {
+        public const string READ   = "accounting.accounting-period.read";
+        public const string CREATE = "accounting.accounting-period.create";
+        public const string REOPEN = "accounting.accounting-period.reopen";
+        public const string CLOSE = "accounting.accounting-period.close";
+    }
+
+    public static class ACCOUNT
+    {
+        public const string READ   = "accounting.account.read";
+        public const string CREATE = "accounting.account.create";
+        public const string UPDATE = "accounting.account.update";
+        public const string DELETE = "accounting.account.delete";
     }
 }
