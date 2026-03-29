@@ -1,0 +1,22 @@
+/* ============================================
+   features/account/components/AccountTypeBadge.module.css
+   ============================================ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.asset     { background: rgba(56, 138, 221, 0.12); color: #6aadec; border: 1px solid rgba(56,138,221,0.2); }
+.liability { background: rgba(224, 82, 82, 0.1);   color: #e87a7a; border: 1px solid rgba(224,82,82,0.2); }
+.equity    { background: rgba(127,119,221,0.12);    color: #a49fe8; border: 1px solid rgba(127,119,221,0.2); }
+.income    { background: rgba(82, 192, 122, 0.1);   color: #6dd49a; border: 1px solid rgba(82,192,122,0.2); }
+.expense   { background: rgba(201, 168, 76, 0.12);  color: var(--color-gold-light); border: 1px solid rgba(201,168,76,0.2); }

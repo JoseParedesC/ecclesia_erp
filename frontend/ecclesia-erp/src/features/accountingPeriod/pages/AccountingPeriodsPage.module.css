@@ -1,0 +1,251 @@
+/* ============================================
+   features/accountingPeriod/pages/AccountingPeriodsPage.module.css
+   ============================================ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: fadeIn 0.3s ease both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px) }
+  to   { opacity: 1; transform: none }
+}
+
+/* ── Header ── */
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.headerLeft { display: flex; flex-direction: column; gap: 0.2rem; }
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--color-text-primary);
+}
+.subtitle {
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--color-text-muted);
+}
+
+.newBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 38px;
+  padding: 0 1.1rem;
+  background: linear-gradient(135deg, var(--color-gold) 0%, #a87c30 100%);
+  color: var(--color-obsidian);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(201,168,76,0.22);
+  transition: opacity 0.15s, transform 0.15s;
+}
+.newBtn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ── Summary cards ── */
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.9rem;
+}
+
+.summaryCard {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  transition: border-color 0.18s;
+}
+.summaryCard:hover { border-color: var(--color-gold-muted); }
+
+.summaryLabel {
+  font-size: 0.74rem;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.03em;
+}
+.summaryValue {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+.summaryHint {
+  font-size: 0.72rem;
+  font-weight: 300;
+  color: var(--color-text-muted);
+}
+
+/* ── Table ── */
+.tableWrap {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.thead tr {
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(201,168,76,0.03);
+}
+.th {
+  padding: 0.7rem 1rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.row {
+  border-bottom: 1px solid var(--color-border-soft);
+  transition: background 0.12s;
+}
+.row:last-child { border-bottom: none; }
+.row:hover { background: rgba(255,255,255,0.02); }
+
+.rowOpen { background: rgba(82,192,122,0.025); }
+.rowOpen:hover { background: rgba(82,192,122,0.05); }
+
+.td {
+  padding: 0.85rem 1rem;
+  vertical-align: middle;
+}
+
+/* Period cell */
+.periodCell {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.activeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #52c07a;
+  box-shadow: 0 0 7px rgba(82,192,122,0.65);
+  flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
+
+.periodName {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--color-text-primary);
+}
+.periodNameOpen { font-weight: 500; }
+.periodYear {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-weight: 300;
+}
+
+/* Meta */
+.meta {
+  font-size: 0.835rem;
+  font-weight: 300;
+  color: var(--color-text-secondary);
+}
+.none { color: var(--color-text-muted); }
+
+/* Close button */
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 30px;
+  padding: 0 0.75rem;
+  background: none;
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: var(--radius-sm);
+  color: var(--color-gold);
+  font-family: var(--font-body);
+  font-size: 0.785rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.closeBtn:hover {
+  background: var(--color-gold-glow);
+  border-color: rgba(201,168,76,0.5);
+}
+
+.closedTag {
+  font-size: 0.775rem;
+  color: var(--color-text-muted);
+  font-weight: 300;
+}
+
+/* ── State boxes ── */
+.stateBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 4rem 2rem;
+  color: var(--color-text-muted);
+}
+.stateBox p { font-size: 0.875rem; font-weight: 300; }
+
+.spinner {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-gold);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg) } }
+
+.emptyAction {
+  margin-top: 0.5rem;
+  height: 34px;
+  padding: 0 1.2rem;
+  background: var(--color-gold-glow);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: var(--radius-sm);
+  color: var(--color-gold-light);
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.emptyAction:hover { background: rgba(201,168,76,0.18); }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .pageHeader { flex-direction: column; }
+  .newBtn { width: 100%; justify-content: center; }
+  .summaryGrid { grid-template-columns: repeat(2, 1fr); }
+}
