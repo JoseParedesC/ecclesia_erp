@@ -83,10 +83,15 @@ async function handleError(res: Response): Promise<never> {
 
   try {
     const body = await res.json() as Partial<ApiResponse<unknown>>;
-    message = body.message ?? message;
-    errors  = body.errors ?? [];
+
+    errors = body.errors ?? [];
+
+    // 🔥 FIX AQUÍ
+    message = body.message 
+      ?? (Array.isArray(errors) && errors.length > 0 ? errors[0] : message);
+
   } catch {
-    // body no es JSON, se mantiene el mensaje genérico
+    // body no es JSON
   }
 
   throw new ApiError(res.status, message, errors);
