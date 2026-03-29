@@ -31,6 +31,9 @@ export const AppRouter: React.FC = () => (
         <Route index                         element={<DashboardHome />} />
         <Route path="accounting/accounts"    element={<AccountsPage />} />
         <Route path="accounting/periods"     element={<AccountingPeriodsPage />} />
+        <Route path="settings/users"         element={<AccountingPeriodsPage />} />
+        <Route path="settings/roles"         element={<AccountingPeriodsPage />} />
+        <Route path="settings/permissions"   element={<AccountingPeriodsPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
