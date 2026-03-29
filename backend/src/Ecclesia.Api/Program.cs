@@ -41,6 +41,12 @@ using Ecclesia.Application.Accounts.Queries.GetAccountById;
 using Ecclesia.Application.Accounts.Commands.UpdateAccount;
 using Ecclesia.Application.Accounts.Commands.DeleteAccount;
 using Ecclesia.Application.Accounts.Queries.SearchAccounts;
+using Ecclesia.Application.AccountingPeriods.Queries.ListAccountingPeriods;
+using Ecclesia.Application.AccountingPeriods.Queries.GetAccountingPeriodById;
+using Ecclesia.Application.AccountingPeriods.Commands.CreateAccountingPeriod;
+using Ecclesia.Application.AccountingPeriods.Commands.CloseAccountingPeriod;
+using Ecclesia.Application.AccountingPeriods.Commands.ReopenAccountingPeriod;
+using Ecclesia.Api.Endpoints.AccountingPeriods;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -109,7 +115,7 @@ builder.Services.AddScoped<IAuthRepository,             AuthRepository>();
 builder.Services.AddScoped<IIncomeRepository,           IncomeRepository>();
 builder.Services.AddScoped<IJournalVoucherRepository,   JournalVoucherRepository>();
 builder.Services.AddScoped<ICommunityRepository,        CommunityRepository>();
-builder.Services.AddScoped<IAccountingPeriodRepository, AccountingPeriodService>();
+builder.Services.AddScoped<IAccountingPeriodRepository, AccountingPeriodRepository>();
 builder.Services.AddScoped<IThirdPartyRepository,       ThirdPartyRepository>();
 builder.Services.AddScoped<IAccountRepository,          AccountRepository>();
 
@@ -146,6 +152,12 @@ builder.Services.AddScoped<GetAccountByIdHandler>();
 builder.Services.AddScoped<UpdateAccountHandler>();
 builder.Services.AddScoped<DeleteAccountHandler>();
 builder.Services.AddScoped<SearchAccountsHandler>();
+//AccountingPeriod
+builder.Services.AddScoped<ListAccountingPeriodsHandler>();
+builder.Services.AddScoped<GetAccountingPeriodByIdHandler>();
+builder.Services.AddScoped<CreateAccountingPeriodHandler>();
+builder.Services.AddScoped<CloseAccountingPeriodHandler>();
+builder.Services.AddScoped<ReopenAccountingPeriodHandler>();
 
 // ── Pipeline ──────────────────────────────────────────────────────────────────
 var app = builder.Build();
@@ -168,5 +180,8 @@ app.MapAuthEndpoints();
 app.MapIncomesEndpoints();
 app.MapThirdPartyEndpoints();
 app.MapAccountEndpoints();
+app.MapAccountingPeriodEndpoints();
+
+
 
 app.Run();

@@ -1,9 +1,9 @@
-
+using Ecclesia.Application.AccountingPeriods.DTOs;
 using Ecclesia.Domain.Common;
 using Ecclesia.Domain.Entities.AccountingPeriod;
 using Ecclesia.Domain.Repositories;
 
-namespace Ecclesia.Application.AccountingPeriod.Commands.CreateAccountingPeriod;
+namespace Ecclesia.Application.AccountingPeriods.Commands.CreateAccountingPeriod;
 
 public class CreateAccountingPeriodHandler
 {
@@ -18,48 +18,19 @@ public class CreateAccountingPeriodHandler
 
     public async Task<Result<AccountingPeriodDetailDto>> HandleAsync(CreateAccountingPeriodCommand command, CancellationToken cancellationToken = default)
     {
-
-        var oldPeriod = await _repository.GetPeriodAsync(command.Period, cancellationToken);
-        if(oldPeriod == null)
-            throw new Exception("Current period not found. Must be Opened to create a new period");
-        if (oldPeriod != null && oldPeriod.Status == StatusDocument.CLOSED)
-            throw new Exception("Current period is closed. Must be Opened to create a new period");
-
-
-        AccountingPeriodEntity periodToCreate = new AccountingPeriodEntity(
-            year: oldPeriod.Year,
-            month: oldPeriod.Month
-        );
-        var newPeriod = await _repository.GetPeriodAsync(periodToCreate.GetPeriodDate(), cancellationToken);
-        if (newPeriod != null)
-            throw new Exception($"Accounting period alredy exist and is {newPeriod.Status}");
-
-            
-        // var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-        // if (!validationResult.IsValid)
-        // {
-        //     var errors = validationResult.Errors.Select(e => e.ErrorMessage);
-        //     return Result<AccountingPeriodDetailDto>.Failure(errors);
-        // }
-
-
-
-        var entity = new AccountingPeriodEntity(
-            year: command.Period.Year,
-            month: command.Period.Month
-        );
-
-        var created = await _repository.CreateOpenPeriodAsync(entity, cancellationToken);
-
-        if(created == null)
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (!validationResult.IsValid)
         {
-            throw new Exception("An error was ocurred creating the new period");
+            var errors = validationResult.Errors.Select(e => e.ErrorMessage);
+            return Result<AccountingPeriodDetailDto>.Failure(errors);
         }
 
-        oldPeriod.Close();
-        
-        _repository.
+        // Verificar que no exista el período
+        if (await _repository.ExistsByYearMonthAsync(command.Year, command.Month, cancellationToken))
+            return Result<AccountingPeriodDetailDto>.Failure([$"Ya existe un período para {command.Month}/{command.Year}."]);
 
-        return Result<AccountingPeriodDetailDto>.Success(created.ToDetailDto());
+        var entity  = new AccountingPeriodEntity(command.Year, command.Month);
+        var created = await _repository.CreateAsync(entity, cancellationToken);
+        return Result<AccountingPeriodDetailDto>.Success(created.ToDto());
     }
 }

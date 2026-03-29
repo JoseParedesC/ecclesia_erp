@@ -3,7 +3,9 @@ using Ecclesia.Domain.Entities.AccountingPeriod;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class AccountingPeriodConfiguration : IEntityTypeConfiguration<AccountingPeriodEntity>
+namespace Ecclesia.Infrastructure.Data.Configurations;
+
+public class AccountingPeriodEntityConfiguration : IEntityTypeConfiguration<AccountingPeriodEntity>
 {
     public void Configure(EntityTypeBuilder<AccountingPeriodEntity> builder)
     {
@@ -18,9 +20,12 @@ public class AccountingPeriodConfiguration : IEntityTypeConfiguration<Accounting
             .IsRequired();
 
         builder.Property(x => x.Status)
+            .HasConversion<string>()
+            .HasMaxLength(20)
             .IsRequired();
 
-        builder.Property(x => x.CommunityId)
-            .IsRequired();
+        // No puede existir dos períodos con el mismo año y mes
+        builder.HasIndex(x => new { x.Year, x.Month })
+            .IsUnique();
     }
 }

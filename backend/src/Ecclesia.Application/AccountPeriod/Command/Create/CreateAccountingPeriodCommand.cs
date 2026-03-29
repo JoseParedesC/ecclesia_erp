@@ -1,7 +1,3 @@
-using Ecclesia.Domain.Common.Enums;
+namespace Ecclesia.Application.AccountingPeriods.Commands.CreateAccountingPeriod;
 
-namespace Ecclesia.Application.AccountingPeriod.Commands.CreateAccountingPeriod;
-
-public record CreateAccountingPeriodCommand(
-    DateTime Period
-);
+public record CreateAccountingPeriodCommand(int Year, int Month);

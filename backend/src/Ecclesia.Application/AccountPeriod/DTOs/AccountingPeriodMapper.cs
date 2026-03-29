@@ -1,13 +1,28 @@
 using Ecclesia.Domain.Entities.AccountingPeriod;
 
+namespace Ecclesia.Application.AccountingPeriods.DTOs;
+
 public static class AccountingPeriodMapper
 {
-    public static AccountingPeriodDetailDto ToDetailDto(this AccountingPeriodEntity entity)  => new (
+    public static AccountingPeriodListDto ToListDto(this AccountingPeriodEntity entity) => new(
+        entity.Id,
         entity.Year,
         entity.Month,
         entity.Status,
         entity.ClosedAt,
-        entity.CommunityId
+        entity.CreatedAt
     );
-    
+
+    public static AccountingPeriodDetailDto ToDto(this AccountingPeriodEntity entity) => new(
+        entity.Id,
+        entity.Year,
+        entity.Month,
+        entity.Status,
+        entity.ClosedAt,
+        entity.ClosedBy,
+        entity.ReopenedAt,
+        entity.ReopenedBy,
+        entity.CreatedAt,
+        entity.UpdatedAt
+    );
 }
