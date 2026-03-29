@@ -26,6 +26,11 @@ public static class DatabaseSeeder
             new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.User, RolePermissionConstants.Permission.Update),
             new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.User, RolePermissionConstants.Permission.Delete),
             new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.User, RolePermissionConstants.Permission.Assign),
+
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.Roles, RolePermissionConstants.Permission.Create),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.Roles, RolePermissionConstants.Permission.Delete),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.Roles, RolePermissionConstants.Permission.Update),
+            new(adminRole.Id, RolePermissionConstants.Schema.AccessManager, RolePermissionConstants.Option.Roles, RolePermissionConstants.Permission.Read),
         };
         
         await context.RolePermissions.AddRangeAsync(permissions);
