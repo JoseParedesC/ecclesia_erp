@@ -1,0 +1,110 @@
+/* ============================================
+   features/account/components/DeleteConfirmModal.module.css
+   ============================================ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 110;
+  padding: 1rem;
+  animation: fadeIn 0.15s ease both;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  width: 100%;
+  max-width: 360px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  animation: slideUp 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: rgba(224, 82, 82, 0.1);
+  border: 1px solid rgba(224, 82, 82, 0.2);
+  border-radius: 12px;
+  color: var(--color-error);
+  margin-bottom: 0.25rem;
+}
+
+.title {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.desc {
+  font-family: var(--font-body);
+  font-size: 0.83rem;
+  font-weight: 300;
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+}
+
+.actions {
+  display: flex;
+  gap: 0.65rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.cancelBtn, .confirmBtn {
+  flex: 1;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.855rem;
+  cursor: pointer;
+  transition: opacity 0.15s, background 0.15s;
+}
+
+.cancelBtn {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.cancelBtn:hover {
+  background: rgba(255,255,255,0.04);
+  color: var(--color-text-primary);
+}
+
+.confirmBtn {
+  background: var(--color-error);
+  border: none;
+  color: #fff;
+  font-weight: 500;
+}
+
+.confirmBtn:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.confirmBtn:disabled, .cancelBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
