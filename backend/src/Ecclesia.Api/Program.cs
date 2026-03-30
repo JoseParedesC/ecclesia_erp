@@ -107,6 +107,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(EcclesiaPermissions.USER.READ,    policy => policy.RequireClaim("permission", EcclesiaPermissions.USER.READ));
     options.AddPolicy(EcclesiaPermissions.USER.UPDATE,  policy => policy.RequireClaim("permission", EcclesiaPermissions.USER.UPDATE));
     options.AddPolicy(EcclesiaPermissions.USER.DELETE,  policy => policy.RequireClaim("permission", EcclesiaPermissions.USER.DELETE));
+    options.AddPolicy(EcclesiaPermissions.USER.ASSIGN,  policy => policy.RequireClaim("permission", EcclesiaPermissions.USER.ASSIGN));
 
     options.AddPolicy(EcclesiaPermissions.ROLES.CREATE, policy => policy.RequireClaim("permission", EcclesiaPermissions.ROLES.CREATE));
     options.AddPolicy(EcclesiaPermissions.ROLES.READ,   policy => policy.RequireClaim("permission", EcclesiaPermissions.ROLES.READ));

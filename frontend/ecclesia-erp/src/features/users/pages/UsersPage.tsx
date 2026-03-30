@@ -58,7 +58,7 @@ export const UsersPage: React.FC = () => {
     setFormError(null);
     if (id) {
       updateMut.mutate(
-        { id, data: { name: data.name, email: data.email, username: data.username } },
+        { id, data: { id: id, name: data.name, email: data.email, username: data.username } },
         { onSuccess: closeForm, onError: (e) => setFormError(e.message) },
       );
     } else {
@@ -77,7 +77,7 @@ export const UsersPage: React.FC = () => {
   const handleAssignRole = (userId: string, roleId: string) => {
     setRoleError(null);
     assignRoleMut.mutate(
-      { userId, data: { roleId } },
+      { userId, data: { roleId, userId } },
       {
         onSuccess: () => setAssigning(null),
         onError:   (e) => setRoleError(e.message),

@@ -55,11 +55,13 @@ export interface CreateUserRequest {
 }
 
 export interface UpdateUserRequest {
+  id: string;
   name: string;
   email: string;
   username: string;
 }
 
 export interface AssignRoleRequest {
+  userId: string;
   roleId: string;
 }

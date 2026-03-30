@@ -1,4 +1,6 @@
 
+using Ecclesia.Api.Endpoints.Roles;
+
 namespace Ecclesia.Api.Endpoints.Users;
 
 public static class UsersEndpoint
@@ -13,6 +15,7 @@ public static class UsersEndpoint
         Create.Map(group); 
         Update.Map(group);
         Delete.Map(group);
+        AssignRoleToUser.Map(group);
     }
 
     
