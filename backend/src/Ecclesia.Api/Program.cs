@@ -47,6 +47,11 @@ using Ecclesia.Application.AccountingPeriods.Commands.CreateAccountingPeriod;
 using Ecclesia.Application.AccountingPeriods.Commands.CloseAccountingPeriod;
 using Ecclesia.Application.AccountingPeriods.Commands.ReopenAccountingPeriod;
 using Ecclesia.Api.Endpoints.AccountingPeriods;
+using Ecclesia.Application.Roles.Queries.SearchRoles;
+using Ecclesia.Application.Roles.Queries;
+using Ecclesia.Application.Roles.Queries.GetAllRoles;
+using Microsoft.AspNetCore.Http.Json;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -104,6 +109,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(EcclesiaPermissions.USER.READ,    policy => policy.RequireClaim("permission", EcclesiaPermissions.USER.READ));
     options.AddPolicy(EcclesiaPermissions.USER.UPDATE,  policy => policy.RequireClaim("permission", EcclesiaPermissions.USER.UPDATE));
     options.AddPolicy(EcclesiaPermissions.USER.DELETE,  policy => policy.RequireClaim("permission", EcclesiaPermissions.USER.DELETE));
+    options.AddPolicy(EcclesiaPermissions.USER.ASSIGN,  policy => policy.RequireClaim("permission", EcclesiaPermissions.USER.ASSIGN));
 
     options.AddPolicy(EcclesiaPermissions.ROLES.CREATE, policy => policy.RequireClaim("permission", EcclesiaPermissions.ROLES.CREATE));
     options.AddPolicy(EcclesiaPermissions.ROLES.READ,   policy => policy.RequireClaim("permission", EcclesiaPermissions.ROLES.READ));
@@ -121,6 +127,15 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(EcclesiaPermissions.INCOME.UPDATE, policy => policy.RequireClaim("permission", EcclesiaPermissions.INCOME.UPDATE));
     options.AddPolicy(EcclesiaPermissions.INCOME.DELETE, policy => policy.RequireClaim("permission", EcclesiaPermissions.INCOME.DELETE));
 });
+
+// ── camelCase Json Properties ──────────────────────────────────────────────────────────
+// Un solo llamado cubre todos los dtos que se serialicen/deserialicen en la API
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    options.SerializerOptions.PropertyNameCaseInsensitive = true;
+});
+
 
 // ── FluentValidation ──────────────────────────────────────────────────────────
 // Un solo llamado cubre todos los validators del ensamblado Application
@@ -153,6 +168,9 @@ builder.Services.AddScoped<DeleteUserHandler>();
 //Role
 builder.Services.AddScoped<CreateRoleHandler>();
 builder.Services.AddScoped<AssignRoleToUserHandler>();
+builder.Services.AddScoped<SearchRolesHandler>();
+builder.Services.AddScoped<GetRoleByIdHandler>();
+builder.Services.AddScoped<GetAllRolesHandler>();
 //Auth
 builder.Services.AddScoped<LoginHandler>();
 builder.Services.AddScoped<MeHandler>();

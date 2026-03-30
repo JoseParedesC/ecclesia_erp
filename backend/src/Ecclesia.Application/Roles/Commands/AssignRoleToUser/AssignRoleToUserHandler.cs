@@ -36,7 +36,7 @@ public class AssignRoleToUserHandler
         if (user is null)
             return Result.Failure($"Usuario con Id '{command.UserId}' no encontrado.");
 
-        var role = await _roleRepository.GetByIdAsync(command.RoleId, cancellationToken);
+        var role = await _roleRepository.GetByIdNoTrackAsync(command.RoleId, cancellationToken);
         if (role is null)
             return Result.Failure($"Rol con Id '{command.RoleId}' no encontrado.");
 

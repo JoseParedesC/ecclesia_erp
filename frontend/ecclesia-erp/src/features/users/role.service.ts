@@ -3,10 +3,15 @@
 // ============================================
 
 import { apiClient } from '../../shared/services/apiClient';
-import type { Role } from './user.types';
+import type { PagedResult, Role } from './user.types';
 
 export const roleService = {
-  getAll(): Promise<Role[]> {
-    return apiClient.get<Role[]>('/api/roles');
+  async getAll(): Promise<Role[]> {
+    const response = await apiClient.get<Role[]>('/api/roles/');
+    return response;
+  },
+
+  async search(): Promise<PagedResult<Role>> {
+    return apiClient.get<PagedResult<Role>>('/api/roles/search');
   },
 };
