@@ -50,6 +50,8 @@ using Ecclesia.Api.Endpoints.AccountingPeriods;
 using Ecclesia.Application.Roles.Queries.SearchRoles;
 using Ecclesia.Application.Roles.Queries;
 using Ecclesia.Application.Roles.Queries.GetAllRoles;
+using Microsoft.AspNetCore.Http.Json;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -125,6 +127,15 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(EcclesiaPermissions.INCOME.UPDATE, policy => policy.RequireClaim("permission", EcclesiaPermissions.INCOME.UPDATE));
     options.AddPolicy(EcclesiaPermissions.INCOME.DELETE, policy => policy.RequireClaim("permission", EcclesiaPermissions.INCOME.DELETE));
 });
+
+// ── camelCase Json Properties ──────────────────────────────────────────────────────────
+// Un solo llamado cubre todos los dtos que se serialicen/deserialicen en la API
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    options.SerializerOptions.PropertyNameCaseInsensitive = true;
+});
+
 
 // ── FluentValidation ──────────────────────────────────────────────────────────
 // Un solo llamado cubre todos los validators del ensamblado Application

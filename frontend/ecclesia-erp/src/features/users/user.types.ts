@@ -39,8 +39,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  username: string;
-  role: Role | null;
+  userName: string;
+  userRoles: Role[] | null;
   createdAt: string;
   updatedAt: string | null;
 }
@@ -49,7 +49,7 @@ export interface User {
 export interface CreateUserRequest {
   name: string;
   email: string;
-  username: string;
+  userName: string;
   password: string;
   roleId?: string | null;
 }
@@ -58,7 +58,7 @@ export interface UpdateUserRequest {
   id: string;
   name: string;
   email: string;
-  username: string;
+  userName: string;
 }
 
 export interface AssignRoleRequest {

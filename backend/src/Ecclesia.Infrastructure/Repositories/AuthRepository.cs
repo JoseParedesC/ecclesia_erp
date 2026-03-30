@@ -23,6 +23,8 @@ public class AuthRepository : IAuthRepository
     public async Task<IEnumerable<string>> GetUserPermissionsAsync(Guid userId, CancellationToken cancellationToken = default)
     => await _context.UserRoles
         .AsNoTracking()
+        .Include(ur => ur.Role)
+        .ThenInclude(r => r.Permissions)
         .Where(ur => ur.UserId == userId)
         .SelectMany(ur => ur.Role.Permissions)
         .Where(p => p.Schema != null && p.Option != null && p.Permission != null)
