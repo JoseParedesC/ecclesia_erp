@@ -1,3 +1,5 @@
+using Ecclesia.Domain.Common;
+using Ecclesia.Domain.Common.PagedQuery;
 using Ecclesia.Domain.Entities.Roles;
 using Ecclesia.Domain.Repositories;
 using Ecclesia.Infrastructure.Data;
@@ -14,7 +16,44 @@ public class RoleRepository : IRoleRepository
         _context = context;
     }
 
-    public async Task<RoleEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<PagedResult<RoleEntity>> ListAllAsync(PagedQuery query, CancellationToken cancellationToken = default)
+    {
+        var dbQuery = _context.Roles.AsNoTracking();
+
+        // Filtro de búsqueda
+        if (!string.IsNullOrWhiteSpace(query.Search))
+        {
+            var pattern = $"%{query.Search}%";
+
+            dbQuery = !string.IsNullOrWhiteSpace(query.SearchField)
+                ? query.SearchField.ToLower() switch  // busca solo en el campo especificado
+                {
+                    "name"     => dbQuery.Where(u => EF.Functions.ILike(u.Name,     pattern)),
+                    _          => dbQuery
+                }
+                : dbQuery.Where(u =>  // busca en todos los campos
+                    EF.Functions.ILike(u.Name,     pattern)
+                );
+        }
+
+        // Ordenamiento — antes del Skip/Take para que opere en BD
+        dbQuery = query.OrderBy?.ToLower() switch
+        {
+            "name"     => query.OrderDescending ? dbQuery.OrderByDescending(u => u.Name)     : dbQuery.OrderBy(u => u.Name),
+            _          => dbQuery.OrderBy(u => u.Name) // default
+        };
+
+        var totalCount = await dbQuery.CountAsync(cancellationToken);
+
+        var items = await dbQuery
+            .Skip((query.Page - 1) * query.PageSize)
+            .Take(query.PageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<RoleEntity>(items, totalCount, query.Page, query.PageSize);
+    }
+
+    public async Task<RoleEntity?> GetByIdNoTrackAsync(Guid id, CancellationToken cancellationToken = default)
         => await _context.Roles
             .AsNoTracking()
             .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);

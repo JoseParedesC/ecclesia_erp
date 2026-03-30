@@ -11,5 +11,7 @@ public static class RolesEndpoint
 
         CreateRole.Map(group);
         AssignRoleToUser.Map(group);
+        GetAll.Map(group);
+        GetById.Map(group);
     }
 }
