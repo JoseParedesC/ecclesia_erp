@@ -10,4 +10,5 @@ public interface IRoleRepository
     Task<RoleEntity?> GetByIdNoTrackAsync(Guid id, CancellationToken cancellationToken = default);
     Task<RoleEntity?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
     Task AddAsync(RoleEntity role, CancellationToken cancellationToken = default);
+    Task<PagedResult<RoleEntity>> SearchAsync(string? search, int page, int pageSize, CancellationToken cancellationToken = default);
 }

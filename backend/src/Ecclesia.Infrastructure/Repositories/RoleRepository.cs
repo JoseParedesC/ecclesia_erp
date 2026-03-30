@@ -53,6 +53,31 @@ public class RoleRepository : IRoleRepository
         return new PagedResult<RoleEntity>(items, totalCount, query.Page, query.PageSize);
     }
 
+    public async Task<PagedResult<RoleEntity>> SearchAsync(string? search, int page, int pageSize, CancellationToken cancellationToken = default)
+    {
+        IQueryable<RoleEntity> dbQuery = _context.Roles.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var pattern = $"%{search}%";
+
+            dbQuery = dbQuery.Where(x =>
+                EF.Functions.ILike(x.Name ?? string.Empty, pattern)
+            );
+        }
+
+        dbQuery = dbQuery.OrderBy(x => x.Name);
+
+        var totalCount = await dbQuery.CountAsync(cancellationToken);
+
+        var items = await dbQuery
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return new PagedResult<RoleEntity>(items, totalCount, page, pageSize);
+    }
+
     public async Task<RoleEntity?> GetByIdNoTrackAsync(Guid id, CancellationToken cancellationToken = default)
         => await _context.Roles
             .AsNoTracking()
