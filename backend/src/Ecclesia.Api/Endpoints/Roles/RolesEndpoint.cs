@@ -1,5 +1,3 @@
-using Ecclesia.Application.Roles.Commands.AssignRoleToUser;
-
 namespace Ecclesia.Api.Endpoints.Roles;
 
 public static class RolesEndpoint
@@ -10,8 +8,8 @@ public static class RolesEndpoint
             .WithTags("Roles");
 
         CreateRole.Map(group);
-        AssignRoleToUser.Map(group);
         GetAll.Map(group);
         GetById.Map(group);
+        Search.Map(group);
     }
 }

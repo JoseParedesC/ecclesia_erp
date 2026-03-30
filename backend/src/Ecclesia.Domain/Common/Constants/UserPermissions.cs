@@ -8,6 +8,7 @@ public static class EcclesiaPermissions
         public const string CREATE = "access_manager.user.create";
         public const string UPDATE = "access_manager.user.update";
         public const string DELETE = "access_manager.user.delete";
+        public const string ASSIGN = "access_manager.user.assign";
     }
 
     public static class ROLES

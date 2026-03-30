@@ -42,6 +42,7 @@ export const userService = {
   },
 
   assignRole(userId: string, data: AssignRoleRequest): Promise<void> {
+    data.userId = userId; // Aseguramos que el userId esté presente en el cuerpo de la solicitud
     return apiClient.post<void>(`${BASE}/${userId}/roles`, data);
   },
 };

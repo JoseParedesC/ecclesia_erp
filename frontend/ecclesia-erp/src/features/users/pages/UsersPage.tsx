@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import {
-  useUsers, useRoles,
+  useUsers, useRolesSearch,
   useCreateUser, useUpdateUser, useDeleteUser, useAssignRole,
 } from '../hooks/useUsers';
 import { UserFormModal }   from '../components/UserFormModal';
@@ -28,7 +28,8 @@ export const UsersPage: React.FC = () => {
 
   // ── Data ──
   const { data, isLoading, isError, isFetching } = useUsers(page, PAGE_SIZE, debouncedSearch);
-  const { data: roles = [] }                      = useRoles();
+  const { data: rolesData } = useRolesSearch();
+  const roles = rolesData?.items ?? []; 
 
   // ── Mutations ──
   const createMut     = useCreateUser();
@@ -57,7 +58,7 @@ export const UsersPage: React.FC = () => {
     setFormError(null);
     if (id) {
       updateMut.mutate(
-        { id, data: { name: data.name, email: data.email, username: data.username } },
+        { id, data: { id: id, name: data.name, email: data.email, userName: data.userName } },
         { onSuccess: closeForm, onError: (e) => setFormError(e.message) },
       );
     } else {
@@ -76,7 +77,7 @@ export const UsersPage: React.FC = () => {
   const handleAssignRole = (userId: string, roleId: string) => {
     setRoleError(null);
     assignRoleMut.mutate(
-      { userId, data: { roleId } },
+      { userId, data: { roleId, userId } },
       {
         onSuccess: () => setAssigning(null),
         onError:   (e) => setRoleError(e.message),
@@ -176,7 +177,6 @@ export const UsersPage: React.FC = () => {
                   <th className={styles.th}>Usuario</th>
                   <th className={styles.th}>Correo</th>
                   <th className={styles.th}>Nombre de usuario</th>
-                  <th className={styles.th}>Rol</th>
                   <th className={styles.th}>Creado</th>
                   <th className={styles.th} style={{ textAlign: 'right' }}>Acciones</th>
                 </tr>
@@ -197,14 +197,7 @@ export const UsersPage: React.FC = () => {
                     </td>
 
                     <td className={styles.td}>
-                      <span className={styles.username}>@{u.username}</span>
-                    </td>
-
-                    <td className={styles.td}>
-                      {u.role
-                        ? <span className={styles.roleBadge}>{u.role.name}</span>
-                        : <span className={styles.noRole}>Sin rol</span>
-                      }
+                      <span className={styles.userName}>@{u.userName}</span>
                     </td>
 
                     <td className={styles.td}>

@@ -26,6 +26,14 @@ export const useRoles = () =>
     staleTime: 1000 * 60 * 10, // roles raramente cambian
   });
 
+export const useRolesSearch = () => {
+  return useQuery({
+    queryKey: ROLES_KEY,
+    queryFn: roleService.search,
+    staleTime: 1000 * 60 * 10,
+  });
+};
+
 // ── Mutations ────────────────────────────────
 
 export const useCreateUser = () => {
