@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import {
-  useUsers, useRoles,
+  useUsers, useRolesSearch,
   useCreateUser, useUpdateUser, useDeleteUser, useAssignRole,
 } from '../hooks/useUsers';
 import { UserFormModal }   from '../components/UserFormModal';
@@ -28,7 +28,8 @@ export const UsersPage: React.FC = () => {
 
   // ── Data ──
   const { data, isLoading, isError, isFetching } = useUsers(page, PAGE_SIZE, debouncedSearch);
-  const { data: roles = [] }                      = useRoles();
+  const { data: rolesData } = useRolesSearch();
+  const roles = rolesData?.items ?? []; 
 
   // ── Mutations ──
   const createMut     = useCreateUser();
