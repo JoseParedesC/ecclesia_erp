@@ -7,6 +7,6 @@ import type { Role } from './user.types';
 
 export const roleService = {
   getAll(): Promise<Role[]> {
-    return apiClient.get<Role[]>('/api/roles');
+    return apiClient.get<Role[]>('/api/roles/search');
   },
 };

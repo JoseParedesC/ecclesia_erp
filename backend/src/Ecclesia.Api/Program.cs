@@ -47,6 +47,9 @@ using Ecclesia.Application.AccountingPeriods.Commands.CreateAccountingPeriod;
 using Ecclesia.Application.AccountingPeriods.Commands.CloseAccountingPeriod;
 using Ecclesia.Application.AccountingPeriods.Commands.ReopenAccountingPeriod;
 using Ecclesia.Api.Endpoints.AccountingPeriods;
+using Ecclesia.Application.Roles.Queries.SearchRoles;
+using Ecclesia.Application.Roles.Queries;
+using Ecclesia.Application.Roles.Queries.GetAllRoles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -153,6 +156,9 @@ builder.Services.AddScoped<DeleteUserHandler>();
 //Role
 builder.Services.AddScoped<CreateRoleHandler>();
 builder.Services.AddScoped<AssignRoleToUserHandler>();
+builder.Services.AddScoped<SearchRolesHandler>();
+builder.Services.AddScoped<GetRoleByIdHandler>();
+builder.Services.AddScoped<GetAllRolesHandler>();
 //Auth
 builder.Services.AddScoped<LoginHandler>();
 builder.Services.AddScoped<MeHandler>();
