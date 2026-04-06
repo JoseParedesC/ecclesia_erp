@@ -56,8 +56,8 @@ using Ecclesia.Application.Rostros.Commands.CreateRostro;
 using Ecclesia.Application.Rostros.Commands.UpdateRostro;
 using Ecclesia.Application.Rostros.Commands.DeactivateRostro;
 using Ecclesia.Application.Rostros.Queries.GetRostroById;
-using Ecclesia.Application.Rostros.Queries.ListRostros;
 using Ecclesia.Api.Endpoints.Rostro;
+using Ecclesia.Api.Endpoints.Permissions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -240,6 +240,7 @@ app.MapThirdPartyEndpoints();
 app.MapAccountEndpoints();
 app.MapAccountingPeriodEndpoints();
 app.MapRostrosEndpoints();
+app.MapPermissionsEndpoints();
 
 // Endpoint de desarrollo para generar hash de contraseña
 if (app.Environment.IsDevelopment())

@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace Ecclesia.Domain.Common.Constants.Permissions;
 
 public static class EcclesiaPermissions
@@ -55,11 +57,48 @@ public static class EcclesiaPermissions
 
     public static class ROSTRO
     {
-        private const string Base = "ecclesia.rostro";
-        public const string Read       = $"{Base}.read";
-        public const string Create     = $"{Base}.create";
-        public const string Update     = $"{Base}.update";
-        public const string Deactivate = $"{Base}.deactivate";
+        public const string Read       = "ecclesia.rostro.read";
+        public const string Create     = "ecclesia.rostro.create";
+        public const string Update     = "ecclesia.rostro.update";
+        public const string Deactivate = "ecclesia.rostro.deactivate";
+    }
+
+    public static Dictionary<string, Dictionary<string, List<string>>> ToDictionary()
+    {
+        var result = new Dictionary<string, Dictionary<string, List<string>>>();
+
+        var nestedTypes = typeof(EcclesiaPermissions).GetNestedTypes(BindingFlags.Public);
+
+        foreach (var type in nestedTypes)
+        {
+            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+
+            foreach (var field in fields)
+            {
+                if (field.FieldType != typeof(string)) continue;
+
+                var value = field.GetValue(null)?.ToString();
+                if (string.IsNullOrWhiteSpace(value)) continue;
+
+                // access_manager.user.read
+                var parts = value.Split('.');
+                if (parts.Length != 3) continue;
+
+                var schema = parts[0];
+                var module = parts[1];
+                var action = parts[2];
+
+                if (!result.ContainsKey(schema))
+                    result[schema] = new Dictionary<string, List<string>>();
+
+                if (!result[schema].ContainsKey(module))
+                    result[schema][module] = new List<string>();
+
+                result[schema][module].Add(action);
+            }
+        }
+
+        return result;
     }
 
 }
