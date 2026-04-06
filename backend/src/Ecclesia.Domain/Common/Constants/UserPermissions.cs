@@ -51,4 +51,15 @@ public static class EcclesiaPermissions
         public const string UPDATE = "accounting.account.update";
         public const string DELETE = "accounting.account.delete";
     }
+
+
+    public static class ROSTRO
+    {
+        private const string Base = "ecclesia.rostro";
+        public const string Read       = $"{Base}.read";
+        public const string Create     = $"{Base}.create";
+        public const string Update     = $"{Base}.update";
+        public const string Deactivate = $"{Base}.deactivate";
+    }
+
 }

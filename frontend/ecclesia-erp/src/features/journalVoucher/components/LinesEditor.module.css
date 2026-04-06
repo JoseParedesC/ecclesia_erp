@@ -1,0 +1,231 @@
+/* features/journalVoucher/components/LinesEditor.module.css */
+
+.wrap {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.tableScroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 520px;
+}
+
+.thead tr {
+  background: rgba(201,168,76,0.04);
+  border-bottom: 1px solid var(--color-border);
+}
+.th {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  text-align: left;
+}
+
+.row { border-bottom: 1px solid var(--color-border-soft); }
+.row:last-child { border-bottom: none; }
+.rowDebit  { background: rgba(82,192,122,0.02); }
+.rowCredit { background: rgba(224,82,82,0.02); }
+
+.td { padding: 0.5rem 0.75rem; vertical-align: middle; }
+
+.emptyRow {
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  font-weight: 300;
+  font-style: italic;
+}
+
+/* Line number badge */
+.lineNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 0.68rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.lineNumD { background: rgba(82,192,122,0.15); color: #52c07a; }
+.lineNumC { background: rgba(224,82,82,0.12);  color: #e05252; }
+
+/* Account select */
+.select {
+  width: 100%;
+  height: 34px;
+  padding: 0 2rem 0 0.65rem;
+  background: var(--color-deep);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: 0.835rem;
+  font-weight: 300;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23505870' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.select:focus { border-color: rgba(201,168,76,0.45); }
+.select option { background: var(--color-deep); }
+.selectEmpty { border-color: rgba(224,82,82,0.35); }
+
+/* Type select */
+.typeSelect {
+  width: 100%;
+  height: 34px;
+  padding: 0 1.8rem 0 0.65rem;
+  background: var(--color-deep);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 400;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23505870' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  cursor: pointer;
+}
+.typeSelect option { background: var(--color-deep); }
+
+/* Amount input */
+.amountInput {
+  width: 100%;
+  height: 34px;
+  padding: 0 0.65rem;
+  background: var(--color-deep);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 400;
+  text-align: right;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.amountInput:focus { border-color: rgba(201,168,76,0.45); }
+.amountInput::-webkit-inner-spin-button,
+.amountInput::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+/* Remove button */
+.removeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+.removeBtn:hover {
+  color: var(--color-error);
+  background: rgba(224,82,82,0.08);
+  border-color: rgba(224,82,82,0.3);
+}
+
+/* Add row */
+.addRow {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  background: rgba(255,255,255,0.015);
+  border-top: 1px solid var(--color-border-soft);
+}
+
+.addBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 28px;
+  padding: 0 0.8rem;
+  background: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.addDebit  {
+  border: 1px solid rgba(82,192,122,0.3);
+  color: #6dd49a;
+}
+.addDebit:hover  { background: rgba(82,192,122,0.08); }
+.addCredit {
+  border: 1px solid rgba(224,82,82,0.3);
+  color: #e87a7a;
+}
+.addCredit:hover { background: rgba(224,82,82,0.06); }
+
+/* Balance bar */
+.balanceBar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0.7rem 1rem;
+  background: rgba(255,255,255,0.02);
+  border-top: 1px solid var(--color-border-soft);
+  transition: background 0.2s;
+}
+.balanceOk  { background: rgba(82,192,122,0.04); border-top-color: rgba(82,192,122,0.15); }
+.balanceErr { background: rgba(224,82,82,0.04);  border-top-color: rgba(224,82,82,0.15); }
+
+.balanceItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+}
+.balanceDivider {
+  width: 1px;
+  height: 32px;
+  background: var(--color-border);
+  margin: 0 1rem;
+  flex-shrink: 0;
+}
+
+.balanceLabel { font-size: 0.68rem; font-weight: 400; color: var(--color-text-muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.balanceVal   { font-family: var(--font-body); font-size: 0.9rem; font-weight: 500; }
+.debitVal     { color: #6dd49a; }
+.creditVal    { color: #e87a7a; }
+
+.balancedTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #52c07a;
+}
+.unbalancedTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--color-error);
+}

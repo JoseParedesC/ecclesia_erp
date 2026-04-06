@@ -51,7 +51,7 @@ export interface CreateUserRequest {
   email: string;
   userName: string;
   password: string;
-  roleId?: string | null;
+  rolesId?: string[] | null;
 }
 
 export interface UpdateUserRequest {

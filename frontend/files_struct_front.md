@@ -72,3 +72,20 @@ features/users/
 shared/
  ├── hooks/useDebounce.ts      ← Reutilizable en cualquier módulo con búsqueda
  └── components/Pagination     ← Paginador con ventana inteligente (1…n…último)
+
+
+
+----------------------------------------------------------------------------------------------------------------
+ features/journalVoucher/
+ ├── journalVoucher.types.ts      ← Todos los tipos + isBalanced() + lineTotals()
+ ├── journalVoucher.service.ts    ← getAll, getById, create, post, cancel
+ ├── hooks/
+ │    └── useJournalVouchers.ts   ← useQuery paginado + 3 mutations
+ ├── components/
+ │    ├── VoucherStatusBadge      ← DRAFT (dorado) / POSTED (verde pulsante) / CANCELLED
+ │    ├── VoucherTypeBadge        ← INCOME / EXPENSE / ADJUSTMENT / REVERSAL
+ │    ├── LinesEditor             ← Editor de líneas con validación de balance en tiempo real
+ │    ├── VoucherFormDrawer       ← Panel lateral: cabecera + LinesEditor + validaciones
+ │    └── VoucherDetailModal      ← Vista readonly con tabla débito/crédito + acciones
+ └── pages/
+      └── JournalVouchersPage.tsx ← Tabla paginada con filtros por tipo, estado y período

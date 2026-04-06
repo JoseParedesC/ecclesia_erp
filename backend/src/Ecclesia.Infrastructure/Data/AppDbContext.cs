@@ -13,6 +13,7 @@ using Ecclesia.Domain.Entities.Comunity;
 using Ecclesia.Domain.Entities.Accounting;
 using Ecclesia.Domain.Entities.ThirdParty;
 using Ecclesia.Domain.Entities.ThirdPartyBranches;
+using Ecclesia.Domain.Entities;
 
 namespace Ecclesia.Infrastructure.Data;
 
@@ -45,6 +46,7 @@ public class AppDbContext : DbContext
     public DbSet<EmployeeInfo> EmployeeInfos => Set<EmployeeInfo>();
     public DbSet<PartnerInfo> PartnerInfos => Set<PartnerInfo>();
     public DbSet<CustomerInfo> CustomerInfos => Set<CustomerInfo>();
+    public DbSet<RostroEntity> Rostros => Set<RostroEntity>();
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

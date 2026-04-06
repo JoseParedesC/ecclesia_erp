@@ -10,9 +10,9 @@ import styles from './UserFormModal.module.css';
 interface FormValues {
   name:     string;
   email:    string;
-  username: string;
+  userName: string;
   password: string;
-  roleId:   string;
+  rolesId:   string[];
 }
 
 interface Props {
@@ -40,18 +40,18 @@ export const UserFormModal: React.FC<Props> = ({
       reset({
         name:     editing?.name     ?? '',
         email:    editing?.email    ?? '',
-        username: editing?.username ?? '',
+        userName: editing?.userName ?? '',
         password: '',
-        roleId:   editing?.role?.id ?? '',
+        rolesId:   editing?.userRoles?.map((r) => r.id) ?? [],
       });
     }
   }, [open, editing, reset]);
 
   if (!open) return null;
 
-  const submit = handleSubmit(({ name, email, username, password, roleId }) => {
+  const submit = handleSubmit(({ name, email, userName, password, rolesId }) => {
     onSubmit(
-      { name, email, username, password, roleId: roleId || null },
+      { name, email, userName, password, rolesId: rolesId || null },
       editing?.id,
     );
   });
@@ -126,15 +126,15 @@ export const UserFormModal: React.FC<Props> = ({
               <label className={styles.label} htmlFor="u-username">Usuario</label>
               <input
                 id="u-username"
-                className={`${styles.input} ${errors.username ? styles.inputErr : ''}`}
+                className={`${styles.input} ${errors.userName ? styles.inputErr : ''}`}
                 placeholder="juan.perez"
-                {...register('username', {
+                {...register('userName', {
                   required:  'Requerido',
                   minLength: { value: 3, message: 'Mínimo 3 caracteres' },
                   pattern:   { value: /^[a-zA-Z0-9._-]+$/, message: 'Sin espacios ni caracteres especiales' },
                 })}
               />
-              {errors.username && <span className={styles.fieldErr}>{errors.username.message}</span>}
+              {errors.userName && <span className={styles.fieldErr}>{errors.userName.message}</span>}
             </div>
           </div>
 
@@ -168,7 +168,7 @@ export const UserFormModal: React.FC<Props> = ({
             <select
               id="u-role"
               className={`${styles.input} ${styles.select}`}
-              {...register('roleId')}
+              {...register('rolesId')}
             >
               <option value="">— Sin rol asignado —</option>
               {roles.map((r) => (

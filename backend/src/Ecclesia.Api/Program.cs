@@ -52,6 +52,12 @@ using Ecclesia.Application.Roles.Queries;
 using Ecclesia.Application.Roles.Queries.GetAllRoles;
 using Microsoft.AspNetCore.Http.Json;
 using System.Text.Json;
+using Ecclesia.Application.Rostros.Commands.CreateRostro;
+using Ecclesia.Application.Rostros.Commands.UpdateRostro;
+using Ecclesia.Application.Rostros.Commands.DeactivateRostro;
+using Ecclesia.Application.Rostros.Queries.GetRostroById;
+using Ecclesia.Application.Rostros.Queries.ListRostros;
+using Ecclesia.Api.Endpoints.Rostro;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -126,6 +132,12 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(EcclesiaPermissions.INCOME.READ,   policy => policy.RequireClaim("permission", EcclesiaPermissions.INCOME.READ));
     options.AddPolicy(EcclesiaPermissions.INCOME.UPDATE, policy => policy.RequireClaim("permission", EcclesiaPermissions.INCOME.UPDATE));
     options.AddPolicy(EcclesiaPermissions.INCOME.DELETE, policy => policy.RequireClaim("permission", EcclesiaPermissions.INCOME.DELETE));
+
+
+    options.AddPolicy(EcclesiaPermissions.ROSTRO.Read, p => p.RequireClaim("permission", EcclesiaPermissions.ROSTRO.Read));
+    options.AddPolicy(EcclesiaPermissions.ROSTRO.Create, p => p.RequireClaim("permission", EcclesiaPermissions.ROSTRO.Create));
+    options.AddPolicy(EcclesiaPermissions.ROSTRO.Update, p => p.RequireClaim("permission", EcclesiaPermissions.ROSTRO.Update));
+    options.AddPolicy(EcclesiaPermissions.ROSTRO.Deactivate, p => p.RequireClaim("permission", EcclesiaPermissions.ROSTRO.Deactivate));
 });
 
 // ── camelCase Json Properties ──────────────────────────────────────────────────────────
@@ -152,6 +164,7 @@ builder.Services.AddScoped<ICommunityRepository,        CommunityRepository>();
 builder.Services.AddScoped<IAccountingPeriodRepository, AccountingPeriodRepository>();
 builder.Services.AddScoped<IThirdPartyRepository,       ThirdPartyRepository>();
 builder.Services.AddScoped<IAccountRepository,          AccountRepository>();
+builder.Services.AddScoped<IRostroRepository,           RostroRepository>();
 
 // ── Services ──────────────────────────────────────────────────────────────────
 builder.Services.AddHttpContextAccessor();
@@ -195,6 +208,12 @@ builder.Services.AddScoped<GetAccountingPeriodByIdHandler>();
 builder.Services.AddScoped<CreateAccountingPeriodHandler>();
 builder.Services.AddScoped<CloseAccountingPeriodHandler>();
 builder.Services.AddScoped<ReopenAccountingPeriodHandler>();
+//Rostros
+builder.Services.AddScoped<CreateRostroHandler>();
+builder.Services.AddScoped<UpdateRostroHandler>();
+builder.Services.AddScoped<DeactivateRostroHandler>();
+builder.Services.AddScoped<GetRostroByIdHandler>();
+builder.Services.AddScoped<ListRostrosHandler>();
 
 // ── Pipeline ──────────────────────────────────────────────────────────────────
 var app = builder.Build();
@@ -220,6 +239,7 @@ app.MapIncomesEndpoints();
 app.MapThirdPartyEndpoints();
 app.MapAccountEndpoints();
 app.MapAccountingPeriodEndpoints();
+app.MapRostrosEndpoints();
 
 // Endpoint de desarrollo para generar hash de contraseña
 if (app.Environment.IsDevelopment())
